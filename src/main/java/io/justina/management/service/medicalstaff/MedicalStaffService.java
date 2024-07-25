@@ -53,29 +53,62 @@ public class MedicalStaffService implements IMedicalStaffService{
     @Override
     @Transactional
     public MedicalStaffResponseDTO registerMedicalStaff(MedicalStaffRegisterDTO medicalStaffRegisterDTO) {
-        var user = userRepository.findByEmail(medicalStaffRegisterDTO.getEmail());
-        if (user == null) {
-            user = modelMapper.map(medicalStaffRegisterDTO, User.class);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoleEnum(RoleEnum.ROLE_DOCTOR);
-            user.setActive(true);
-            userRepository.save(user);
+        User existingUser = userRepository.findByEmail(medicalStaffRegisterDTO.getEmail());
+        if (existingUser != null) {
+            throw new RuntimeException("User already exists with email: " + medicalStaffRegisterDTO.getEmail());
         }
+
+        User user = modelMapper.map(medicalStaffRegisterDTO, User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoleEnum(RoleEnum.ROLE_DOCTOR);
+        user.setActive(true);
+        userRepository.save(user);
+
         MedicalStaff existingMedicalStaff = medicalStaffRepository.findByUser(user);
-        if (existingMedicalStaff == null) {
-            MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
-            medicalStaff.setUser(user);
-            medicalStaffRepository.save(medicalStaff);
-            user.setMedicalStaff(medicalStaff);
-            userRepository.save(user);
+        if (existingMedicalStaff != null) {
+            throw new RuntimeException("MedicalStaff already exists for user with email: " + medicalStaffRegisterDTO.getEmail());
         }
-        MedicalStaff savedMedicalStaff = medicalStaffRepository.findByUser(user);
-        MedicalStaffResponseDTO responseDTO = modelMapper.map(savedMedicalStaff, MedicalStaffResponseDTO.class);
+
+        MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
+        medicalStaff.setUser(user);
+        medicalStaffRepository.save(medicalStaff);
+
+        user.setMedicalStaff(medicalStaff);
+        userRepository.save(user);
+
+        MedicalStaffResponseDTO responseDTO = modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
         responseDTO.setFirstName(user.getFirstName());
         responseDTO.setLastName(user.getLastName());
         responseDTO.setEmail(user.getEmail());
+
         return responseDTO;
     }
+//    @Override
+//    @Transactional
+//    public MedicalStaffResponseDTO registerMedicalStaff(MedicalStaffRegisterDTO medicalStaffRegisterDTO) {
+//        var user = userRepository.findByEmail(medicalStaffRegisterDTO.getEmail());
+//        if (user == null) {
+//            user = modelMapper.map(medicalStaffRegisterDTO, User.class);
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//            user.setRoleEnum(RoleEnum.ROLE_DOCTOR);
+//            user.setActive(true);
+//            userRepository.save(user);
+//        }
+//        MedicalStaff existingMedicalStaff = medicalStaffRepository.findByUser(user);
+//        if (existingMedicalStaff == null) {
+//            MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
+//            medicalStaff.setUser(user);
+//            medicalStaffRepository.save(medicalStaff);
+//            user.setMedicalStaff(medicalStaff);
+//            userRepository.save(user);
+//        }
+//        MedicalStaff savedMedicalStaff = medicalStaffRepository.findByUser(user);
+//        MedicalStaffResponseDTO responseDTO = modelMapper.map(savedMedicalStaff, MedicalStaffResponseDTO.class);
+//        responseDTO.setFirstName(user.getFirstName());
+//        responseDTO.setLastName(user.getLastName());
+//        responseDTO.setEmail(user.getEmail());
+//        return responseDTO;
+//    }
 
     /**
      * Obtiene la información de un miembro del personal médico por su ID.

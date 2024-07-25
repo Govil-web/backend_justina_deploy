@@ -3,6 +3,7 @@ package io.justina.management.service.user;
 import io.justina.management.dto.user.UserRegisterDataDTO;
 import io.justina.management.dto.user.UserResponseDataDTO;
 import io.justina.management.enums.RoleEnum;
+import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.User;
 import io.justina.management.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -53,14 +54,16 @@ public class UserService implements IUserService {
     @Transactional
     public UserResponseDataDTO registerUser(UserRegisterDataDTO userRegisterDataDTO) {
         if(userRepository.existsByEmail(userRegisterDataDTO.getEmail())) {
-            throw new RuntimeException("User already exists with email: " + userRegisterDataDTO.getEmail());
+            throw new BadRequestException("User already exists with email: " + userRegisterDataDTO.getEmail());
+        }else{
+            User user = modelMapper.map(userRegisterDataDTO, User.class);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setActive(true);
+            user.setRoleEnum(RoleEnum.valueOf(user.getRoleEnum().name()));
+            userRepository.save(user);
+            return modelMapper.map(user, UserResponseDataDTO.class);
         }
-        User user = modelMapper.map(userRegisterDataDTO, User.class);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setActive(true);
-        user.setRoleEnum(RoleEnum.valueOf(user.getRoleEnum().name()));
-        userRepository.save(user);
-        return modelMapper.map(user, UserResponseDataDTO.class);
+
     }
 
     /**

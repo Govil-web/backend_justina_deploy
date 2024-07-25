@@ -9,6 +9,7 @@ import io.justina.management.model.User;
 import io.justina.management.repository.PatientRepository;
 import io.justina.management.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -76,36 +77,65 @@ public class PatientServiceImpl implements PatientService {
      * @param patientRequestDTO Objeto que representa al paciente que se desea crear.
      * @return Objeto Patient creado.
      */
-      @Override
-      public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO){
-          var user = userRepository.findByEmail(patientRequestDTO.getEmail());
-          if (user == null) {
-              user = modelMapper.map(patientRequestDTO, User.class);
-              user.setPassword(passwordEncoder.encode(user.getPassword()));
-              user.setRoleEnum(RoleEnum.ROLE_PATIENT);
-              user.setActive(true);
-              userRepository.save(user);
-          }
-            Patient existingPatient = patientRepository.findByUser(user);
-            if (existingPatient == null) {
-                Patient patient = modelMapper.map(patientRequestDTO, Patient.class);
-                patient.setUser(user);
-                patient.setBirthDate(LocalDate.parse(patientRequestDTO.getBirthDate()));
-                patientRepository.save(patient);
-                user.setPatient(patient);
-                userRepository.save(user);
-            }
-            Patient savedPatient = patientRepository.findByUser(user);
-            PatientResponseDTO responseDTO = modelMapper.map(savedPatient, PatientResponseDTO.class);
-            responseDTO.setFirstName(user.getFirstName());
-            responseDTO.setLastName(user.getLastName());
-            responseDTO.setEmail(user.getEmail());
-            return responseDTO;
-      }
-//    @Override
-//    public Patient createPatient(Patient patient) {
-//        return patientRepository.save(patient);
-//    }
+    @Override
+    @Transactional
+    public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO) {
+        User existingUser = userRepository.findByEmail(patientRequestDTO.getEmail());
+        if (existingUser != null) {
+            throw new RuntimeException("User already exists with email: " + patientRequestDTO.getEmail());
+        }
+        User user = modelMapper.map(patientRequestDTO, User.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoleEnum(RoleEnum.ROLE_PATIENT);
+        user.setActive(true);
+        userRepository.save(user);
+
+        Patient existingPatient = patientRepository.findByUser(user);
+        if (existingPatient != null) {
+            throw new RuntimeException("Patient already exists for user with email: " + patientRequestDTO.getEmail());
+        }
+        Patient patient = modelMapper.map(patientRequestDTO, Patient.class);
+        patient.setUser(user);
+        patient.setBirthDate(LocalDate.parse(patientRequestDTO.getBirthDate()));
+        patientRepository.save(patient);
+
+        user.setPatient(patient);
+        userRepository.save(user);
+
+        PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
+        responseDTO.setFirstName(user.getFirstName());
+        responseDTO.setLastName(user.getLastName());
+        responseDTO.setEmail(user.getEmail());
+
+        return responseDTO;
+    }
+
+//      @Override
+//      public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO){
+//          var user = userRepository.findByEmail(patientRequestDTO.getEmail());
+//          if (user == null) {
+//              user = modelMapper.map(patientRequestDTO, User.class);
+//              user.setPassword(passwordEncoder.encode(user.getPassword()));
+//              user.setRoleEnum(RoleEnum.ROLE_PATIENT);
+//              user.setActive(true);
+//              userRepository.save(user);
+//          }
+//            Patient existingPatient = patientRepository.findByUser(user);
+//            if (existingPatient == null) {
+//                Patient patient = modelMapper.map(patientRequestDTO, Patient.class);
+//                patient.setUser(user);
+//                patient.setBirthDate(LocalDate.parse(patientRequestDTO.getBirthDate()));
+//                patientRepository.save(patient);
+//                user.setPatient(patient);
+//                userRepository.save(user);
+//            }
+//            Patient savedPatient = patientRepository.findByUser(user);
+//            PatientResponseDTO responseDTO = modelMapper.map(savedPatient, PatientResponseDTO.class);
+//            responseDTO.setFirstName(user.getFirstName());
+//            responseDTO.setLastName(user.getLastName());
+//            responseDTO.setEmail(user.getEmail());
+//            return responseDTO;
+//      }
 
     /**
      * Desactiva a un paciente por su ID.
