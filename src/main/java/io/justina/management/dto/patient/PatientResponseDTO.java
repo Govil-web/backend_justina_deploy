@@ -11,6 +11,11 @@ import java.time.LocalDate;
 public class PatientResponseDTO {
 
     /**
+     * Identificador único del paciente.
+     */
+    private Long idPatient;
+
+    /**
      * Nombre del paciente.
      */
     private String firstName;
