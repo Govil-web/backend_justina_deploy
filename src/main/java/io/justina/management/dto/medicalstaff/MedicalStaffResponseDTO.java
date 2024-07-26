@@ -51,5 +51,9 @@ public class MedicalStaffResponseDTO {
      * Descripción del perfil del personal médico.
      */
     private String description;
+    /**
+     * Estado activo/inactivo personal médico.
+     */
+    private Boolean active;
 }
 

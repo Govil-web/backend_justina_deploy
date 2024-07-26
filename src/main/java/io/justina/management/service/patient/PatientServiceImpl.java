@@ -49,9 +49,15 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public List<PatientResponseDTO> getAllPatients() {
-        // Mapeo personalizado para incluir el nombre del paciente desde el usuario asociado
+
         modelMapper.typeMap(Patient.class, PatientResponseDTO.class)
-                .addMappings(mapper -> mapper.map(src -> src.getUser().getFirstName(), PatientResponseDTO::setFirstName));
+                .addMappings(mapper -> {
+                    mapper.map(src -> src.getUser().getFirstName(), PatientResponseDTO::setFirstName);
+                    mapper.map(src -> src.getUser().getLastName(), PatientResponseDTO::setLastName);
+                    mapper.map(src -> src.getUser().getEmail(), PatientResponseDTO::setEmail);
+                    mapper.map(src -> src.getUser().getActive(), PatientResponseDTO::setActive);
+                    // Agrega más mapeos según sea necesario
+                });
 
         return patientRepository.findAll().stream()
                 .map(patient -> modelMapper.map(patient, PatientResponseDTO.class))

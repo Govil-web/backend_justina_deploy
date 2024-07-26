@@ -131,6 +131,6 @@ public class TokenService implements ITokenService {
      * @return La fecha de expiración del token JWT (1 hora desde ahora)
      */
     private Instant generateExpirationDate(){
-        return LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.of("-05:00"));
+        return LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-05:00"));
     }
 }

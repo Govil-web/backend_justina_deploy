@@ -189,6 +189,7 @@ public class MedicalStaffService implements IMedicalStaffService{
                         dto.setFirstName(user.getFirstName());
                         dto.setLastName(user.getLastName());
                         dto.setEmail(user.getEmail());
+                        dto.setActive(user.getActive());
                     }
                     return dto;
                 })

@@ -48,4 +48,8 @@ public class PatientResponseDTO {
      * Sexo del paciente.
      */
     private char sex;
+    /**
+     * Indica paciente activo/inactivo.
+     */
+    private boolean active;
 }
