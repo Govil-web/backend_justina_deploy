@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.justina.management.JustinaApplicationTests" time="11.023" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.justina.management.JustinaApplicationTests" time="11.487" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -16,7 +16,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CO"/>
     <property name="sun.boot.library.path" value="C:\Users\gvill\.jdks\openjdk-21.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\gvill\AppData\Local\Temp\surefire8682839390137221961\surefirebooter-20240730091912919_3.jar C:\Users\gvill\AppData\Local\Temp\surefire8682839390137221961 2024-07-30T09-19-12_799-jvmRun1 surefire-20240730091912919_1tmp surefire_0-20240730091912919_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\gvill\AppData\Local\Temp\surefire465280359034254075\surefirebooter-20240730094417488_3.jar C:\Users\gvill\AppData\Local\Temp\surefire465280359034254075 2024-07-30T09-44-17_368-jvmRun1 surefire-20240730094417488_1tmp surefire_0-20240730094417488_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\target\test-classes;C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\target\classes;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.3.1\spring-boot-starter-data-jpa-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-aop\3.3.1\spring-boot-starter-aop-3.3.1.jar;C:\Users\gvill\.m2\repository\org\aspectj\aspectjweaver\1.9.22\aspectjweaver-1.9.22.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\3.3.1\spring-boot-starter-jdbc-3.3.1.jar;C:\Users\gvill\.m2\repository\com\zaxxer\HikariCP\5.1.0\HikariCP-5.1.0.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-jdbc\6.1.10\spring-jdbc-6.1.10.jar;C:\Users\gvill\.m2\repository\org\hibernate\orm\hibernate-core\6.5.2.Final\hibernate-core-6.5.2.Final.jar;C:\Users\gvill\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;C:\Users\gvill\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\gvill\.m2\repository\org\jboss\logging\jboss-logging\3.5.3.Final\jboss-logging-3.5.3.Final.jar;C:\Users\gvill\.m2\repository\org\hibernate\common\hibernate-commons-annotations\6.0.6.Final\hibernate-commons-annotations-6.0.6.Final.jar;C:\Users\gvill\.m2\repository\io\smallrye\jandex\3.1.2\jandex-3.1.2.jar;C:\Users\gvill\.m2\repository\com\fasterxml\classmate\1.7.0\classmate-1.7.0.jar;C:\Users\gvill\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.5\jaxb-runtime-4.0.5.jar;C:\Users\gvill\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.5\jaxb-core-4.0.5.jar;C:\Users\gvill\.m2\repository\org\eclipse\angus\angus-activation\2.0.2\angus-activation-2.0.2.jar;C:\Users\gvill\.m2\repository\org\glassfish\jaxb\txw2\4.0.5\txw2-4.0.5.jar;C:\Users\gvill\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.2\istack-commons-runtime-4.1.2.jar;C:\Users\gvill\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\gvill\.m2\repository\org\antlr\antlr4-runtime\4.13.0\antlr4-runtime-4.13.0.jar;C:\Users\gvill\.m2\repository\org\springframework\data\spring-data-jpa\3.3.1\spring-data-jpa-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\data\spring-data-commons\3.3.1\spring-data-commons-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-orm\6.1.10\spring-orm-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-tx\6.1.10\spring-tx-6.1.10.jar;C:\Users\gvill\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\gvill\.m2\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-aspects\6.1.10\spring-aspects-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-security\3.3.1\spring-boot-starter-security-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter\3.3.1\spring-boot-starter-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.3.1\spring-boot-starter-logging-3.3.1.jar;C:\Users\gvill\.m2\repository\ch\qos\logback\logback-classic\1.5.6\logback-classic-1.5.6.jar;C:\Users\gvill\.m2\repository\ch\qos\logback\logback-core\1.5.6\logback-core-1.5.6.jar;C:\Users\gvill\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.23.1\log4j-to-slf4j-2.23.1.jar;C:\Users\gvill\.m2\repository\org\apache\logging\log4j\log4j-api\2.23.1\log4j-api-2.23.1.jar;C:\Users\gvill\.m2\repository\org\slf4j\jul-to-slf4j\2.0.13\jul-to-slf4j-2.0.13.jar;C:\Users\gvill\.m2\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-aop\6.1.10\spring-aop-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\security\spring-security-config\6.3.1\spring-security-config-6.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\security\spring-security-web\6.3.1\spring-security-web-6.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-validation\3.3.1\spring-boot-starter-validation-3.3.1.jar;C:\Users\gvill\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.25\tomcat-embed-el-10.1.25.jar;C:\Users\gvill\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.1.Final\hibernate-validator-8.0.1.Final.jar;C:\Users\gvill\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.3.1\spring-boot-starter-web-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.3.1\spring-boot-starter-json-3.3.1.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.17.1\jackson-datatype-jdk8-2.17.1.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.17.1\jackson-datatype-jsr310-2.17.1.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.17.1\jackson-module-parameter-names-2.17.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\3.3.1\spring-boot-starter-tomcat-3.3.1.jar;C:\Users\gvill\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.25\tomcat-embed-core-10.1.25.jar;C:\Users\gvill\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.25\tomcat-embed-websocket-10.1.25.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-web\6.1.10\spring-web-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-webmvc\6.1.10\spring-webmvc-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-devtools\3.3.1\spring-boot-devtools-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot\3.3.1\spring-boot-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.3.1\spring-boot-autoconfigure-3.3.1.jar;C:\Users\gvill\.m2\repository\org\postgresql\postgresql\42.7.3\postgresql-42.7.3.jar;C:\Users\gvill\.m2\repository\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;C:\Users\gvill\.m2\repository\org\projectlombok\lombok\1.18.32\lombok-1.18.32.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-starter-test\3.3.1\spring-boot-starter-test-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-test\3.3.1\spring-boot-test-3.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\boot\spring-boot-test-autoconfigure\3.3.1\spring-boot-test-autoconfigure-3.3.1.jar;C:\Users\gvill\.m2\repository\com\jayway\jsonpath\json-path\2.9.0\json-path-2.9.0.jar;C:\Users\gvill\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.2\jakarta.xml.bind-api-4.0.2.jar;C:\Users\gvill\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.3\jakarta.activation-api-2.1.3.jar;C:\Users\gvill\.m2\repository\net\minidev\json-smart\2.5.1\json-smart-2.5.1.jar;C:\Users\gvill\.m2\repository\net\minidev\accessors-smart\2.5.1\accessors-smart-2.5.1.jar;C:\Users\gvill\.m2\repository\org\ow2\asm\asm\9.6\asm-9.6.jar;C:\Users\gvill\.m2\repository\org\assertj\assertj-core\3.25.3\assertj-core-3.25.3.jar;C:\Users\gvill\.m2\repository\org\awaitility\awaitility\4.2.1\awaitility-4.2.1.jar;C:\Users\gvill\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;C:\Users\gvill\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\gvill\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\gvill\.m2\repository\org\mockito\mockito-junit-jupiter\5.11.0\mockito-junit-jupiter-5.11.0.jar;C:\Users\gvill\.m2\repository\org\skyscreamer\jsonassert\1.5.1\jsonassert-1.5.1.jar;C:\Users\gvill\.m2\repository\com\vaadin\external\google\android-json\0.0.20131108.vaadin1\android-json-0.0.20131108.vaadin1.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-core\6.1.10\spring-core-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-jcl\6.1.10\spring-jcl-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-test\6.1.10\spring-test-6.1.10.jar;C:\Users\gvill\.m2\repository\org\xmlunit\xmlunit-core\2.9.1\xmlunit-core-2.9.1.jar;C:\Users\gvill\.m2\repository\org\springframework\security\spring-security-test\6.3.1\spring-security-test-6.3.1.jar;C:\Users\gvill\.m2\repository\org\springdoc\springdoc-openapi-starter-webmvc-ui\2.2.0\springdoc-openapi-starter-webmvc-ui-2.2.0.jar;C:\Users\gvill\.m2\repository\org\springdoc\springdoc-openapi-starter-webmvc-api\2.2.0\springdoc-openapi-starter-webmvc-api-2.2.0.jar;C:\Users\gvill\.m2\repository\org\springdoc\springdoc-openapi-starter-common\2.2.0\springdoc-openapi-starter-common-2.2.0.jar;C:\Users\gvill\.m2\repository\io\swagger\core\v3\swagger-core-jakarta\2.2.15\swagger-core-jakarta-2.2.15.jar;C:\Users\gvill\.m2\repository\org\apache\commons\commons-lang3\3.14.0\commons-lang3-3.14.0.jar;C:\Users\gvill\.m2\repository\io\swagger\core\v3\swagger-annotations-jakarta\2.2.15\swagger-annotations-jakarta-2.2.15.jar;C:\Users\gvill\.m2\repository\io\swagger\core\v3\swagger-models-jakarta\2.2.15\swagger-models-jakarta-2.2.15.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.1\jackson-dataformat-yaml-2.17.1.jar;C:\Users\gvill\.m2\repository\org\webjars\swagger-ui\5.2.0\swagger-ui-5.2.0.jar;C:\Users\gvill\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.0\junit-jupiter-engine-5.9.0.jar;C:\Users\gvill\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;C:\Users\gvill\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\gvill\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\gvill\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\gvill\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\gvill\.m2\repository\org\mockito\mockito-core\3.12.4\mockito-core-3.12.4.jar;C:\Users\gvill\.m2\repository\net\bytebuddy\byte-buddy\1.14.17\byte-buddy-1.14.17.jar;C:\Users\gvill\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.17\byte-buddy-agent-1.14.17.jar;C:\Users\gvill\.m2\repository\org\objenesis\objenesis\3.2\objenesis-3.2.jar;C:\Users\gvill\.m2\repository\com\auth0\java-jwt\4.2.0\java-jwt-4.2.0.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar;C:\Users\gvill\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar;C:\Users\gvill\.m2\repository\org\springframework\security\spring-security-core\6.3.1\spring-security-core-6.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\security\spring-security-crypto\6.3.1\spring-security-crypto-6.3.1.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-beans\6.1.10\spring-beans-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-context\6.1.10\spring-context-6.1.10.jar;C:\Users\gvill\.m2\repository\org\springframework\spring-expression\6.1.10\spring-expression-6.1.10.jar;C:\Users\gvill\.m2\repository\io\micrometer\micrometer-observation\1.13.1\micrometer-observation-1.13.1.jar;C:\Users\gvill\.m2\repository\io\micrometer\micrometer-commons\1.13.1\micrometer-commons-1.13.1.jar;C:\Users\gvill\.m2\repository\org\modelmapper\modelmapper\3.1.1\modelmapper-3.1.1.jar;C:\Users\gvill\.m2\repository\io\jsonwebtoken\jjwt-api\0.11.5\jjwt-api-0.11.5.jar;C:\Users\gvill\.m2\repository\io\jsonwebtoken\jjwt-impl\0.11.5\jjwt-impl-0.11.5.jar;C:\Users\gvill\.m2\repository\io\jsonwebtoken\jjwt-jackson\0.11.5\jjwt-jackson-0.11.5.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="FILE_LOG_CHARSET" value="UTF-8"/>
     <property name="java.awt.headless" value="true"/>
-    <property name="surefire.real.class.path" value="C:\Users\gvill\AppData\Local\Temp\surefire8682839390137221961\surefirebooter-20240730091912919_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\gvill\AppData\Local\Temp\surefire465280359034254075\surefirebooter-20240730094417488_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.2+13-58"/>
@@ -53,7 +53,7 @@
     <property name="user.dir" value="C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="PID" value="20792"/>
+    <property name="PID" value="8660"/>
     <property name="sun.os.patch.level" value=""/>
     <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
     <property name="native.encoding" value="Cp1252"/>
@@ -66,10 +66,10 @@
     <property name="java.class.version" value="65.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[justina] "/>
   </properties>
-  <testcase name="contextLoads" classname="io.justina.management.JustinaApplicationTests" time="0.144">
-    <system-out><![CDATA[09:19:13.850 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [io.justina.management.JustinaApplicationTests]: JustinaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-09:19:13.993 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration io.justina.management.JustinaApplication for test class io.justina.management.JustinaApplicationTests
-09:19:14.187 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+  <testcase name="contextLoads" classname="io.justina.management.JustinaApplicationTests" time="0.157">
+    <system-out><![CDATA[09:44:18.628 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [io.justina.management.JustinaApplicationTests]: JustinaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+09:44:18.738 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration io.justina.management.JustinaApplication for test class io.justina.management.JustinaApplicationTests
+09:44:18.923 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -80,115 +80,21 @@
 
  :: Spring Boot ::                (v3.3.1)
 
-2024-07-30T09:19:14.456-05:00  INFO 20792 --- [justina] [           main] i.j.management.JustinaApplicationTests   : Starting JustinaApplicationTests using Java 21.0.2 with PID 20792 (started by gvill in C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend)
-2024-07-30T09:19:14.458-05:00  INFO 20792 --- [justina] [           main] i.j.management.JustinaApplicationTests   : No active profile set, falling back to 1 default profile: "default"
-2024-07-30T09:19:15.525-05:00  INFO 20792 --- [justina] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2024-07-30T09:19:15.600-05:00  INFO 20792 --- [justina] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 68 ms. Found 5 JPA repository interfaces.
-2024-07-30T09:19:16.232-05:00  INFO 20792 --- [justina] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2024-07-30T09:19:16.306-05:00  INFO 20792 --- [justina] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
-2024-07-30T09:19:16.358-05:00  INFO 20792 --- [justina] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2024-07-30T09:19:16.791-05:00  INFO 20792 --- [justina] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2024-07-30T09:19:16.827-05:00  INFO 20792 --- [justina] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2024-07-30T09:19:18.474-05:00  INFO 20792 --- [justina] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@23c05889
-2024-07-30T09:19:18.476-05:00  INFO 20792 --- [justina] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2024-07-30T09:19:20.040-05:00  INFO 20792 --- [justina] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-Hibernate: 
-    alter table if exists medical_staff 
-       drop constraint if exists FKbfabhikbfne8q8i675cbrds7y
-Hibernate: 
-    alter table if exists pacientes 
-       drop constraint if exists FKs4xpmvt68heml4pc1m8bay0es
-Hibernate: 
-    alter table if exists turnos 
-       drop constraint if exists FKdytm0i9wh1xdnu8kcujkdqrrt
-Hibernate: 
-    alter table if exists turnos 
-       drop constraint if exists FK4okcqr9iqt2iw6xhy1ppsmo3l
-Hibernate: 
-    drop table if exists financiadores cascade
-Hibernate: 
-    drop table if exists medical_staff cascade
-Hibernate: 
-    drop table if exists pacientes cascade
-2024-07-30T09:19:21.204-05:00  WARN 20792 --- [justina] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
-2024-07-30T09:19:21.204-05:00  WARN 20792 --- [justina] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : drop cascades to constraint fkq1vgsf0yrje1jlyopn1bmcgw3 on table turnos
-Hibernate: 
-    drop table if exists turnos cascade
-Hibernate: 
-    drop table if exists users cascade
-Hibernate: 
-    create table financiadores (
-        id_financiador uuid not null,
-        datos_contacto varchar(255),
-        nombre varchar(255),
-        plan varchar(255),
-        primary key (id_financiador)
-    )
-Hibernate: 
-    create table medical_staff (
-        numero_registro_medico integer,
-        id_personal_medico bigint generated by default as identity,
-        user_id bigint unique,
-        descripcion varchar(255),
-        especialidad varchar(255) check (especialidad in ('ALERGIA_E_INMUNOLOGIA','ALERGIA_E_INMUNOLOGIA_PEDIATRICA','ANATOMIA_PATOLOGICA','ANESTESIOLOGIA','ANESTESIOLOGIA_GENERAL_Y_HEMODINAMIA','CARDIOLOGIA','CARDIOLOGIA_INFANTIL','CIRUGIA_CARDIOVASCULAR','CIRUGIA_CARDIOVASCULAR_PEDIATRICA','CIRUGIA_CABEZA_Y_CUELLO','CIRUGIA_TORACICA','CIRUGIA_PEDIATRICA','CIRUGIA_PLASTICA_Y_REPARADORA','CIRUGIA_VASCULAR_PERIFERICA','CLINICA_MEDICA','COLOPROCTOLOGIA','DERMATOLOGIA','DERMATOLOGIA_PEDIATRICA','DIAGNOSTICO_POR_IMAGENES','ELECTRO_FISIOLOGIA_CARDIACA','EMERGENTOLOGIA','ENDOCRINOLOGIA','ENDOCRINOLOGIA_INFANTIL','FARMACOLOGIA_CLINICA','FISIATRIA','GASTROENTEROLOGIA','GASTROENTEROLOGIA_INFANTIL','GENETICA_MEDICA','GERIATRIA','GINECOLOGOGIA','HEMATOLOGIA','HEMATOONCOLOGIA_PEDIATRICA','HEMOTERAPIA_E_INMUNOHEMATOLOGIA','HEPATOLOGIA','HEPATOLOGIA_PEDIATRICA','INFECTOLOGIA','INFECTOLOGIA_INFANTIL','MEDICINA_DEL_DEPORTE','MEDICINA_DEL_TRABAJO','MEDICINA_GENERAL','MEDICINA_LEGAL','MEDICINA_NUCLEAR','MEDICINA_PALIATIVA','NEFROLOGIA','NEFROLOGIA_INFANTIL','NEONATOLOGIA','NEUMONOLOGIA','NEUMONOLOGIA_INFANTIL','NEUROCIRUGIA','NEUROLOGIA','NEUROLOGIA_INFANTIL','NUTRICION','NUTRICION_INFANTIL','OBSTETRICIA','ODONTOLOGIA','OFTALMOLOGIA','ONCOLOGIA','ORTOPEDIA_Y_TRAUMATOLOGIA','ORTOPEDIA_Y_TRAUMATOLOGIA_INFANTIL','OTORRINOLARINGOLOGIA','PEDIATRIA','PSICOLOGIA','PSIQUIATRIA','PSIQUIATRIA_INFANTOJUVENIL','RADIOTERAPIA','REUMATOLOGIA','REUMATOLOGIA_INFANTIL','TERAPIA_INTENSIVA','TERAPIA_INTENSIVA_INFANTIL','TOCOGINECOLOGIA','TOXICOLOGIA','UROLOGIA')),
-        telefono varchar(255),
-        primary key (id_personal_medico)
-    )
-Hibernate: 
-    create table pacientes (
-        activo boolean,
-        fecha_nacimiento date,
-        sexo char(1),
-        id_paciente bigint generated by default as identity,
-        user_id bigint unique,
-        factor_sanguíneo varchar(255),
-        grupo_sanguíneo varchar(255),
-        numero_documento varchar(255),
-        primary key (id_paciente)
-    )
-Hibernate: 
-    create table turnos (
-        fecha_turno timestamp(6),
-        id_turno bigint generated by default as identity,
-        paciente_id bigint,
-        professional_id bigint,
-        centro_atencion varchar(255),
-        primary key (id_turno)
-    )
-Hibernate: 
-    create table users (
-        activo boolean,
-        id bigint generated by default as identity,
-        apellido varchar(255),
-        email varchar(255) unique,
-        nombre varchar(255),
-        password varchar(255),
-        role_enum varchar(255) check (role_enum in ('ROLE_ADMIN','ROLE_DOCTOR','ROLE_PATIENT','ROLE_FINANCIER')),
-        primary key (id)
-    )
-Hibernate: 
-    alter table if exists medical_staff 
-       add constraint FKbfabhikbfne8q8i675cbrds7y 
-       foreign key (user_id) 
-       references users
-Hibernate: 
-    alter table if exists pacientes 
-       add constraint FKs4xpmvt68heml4pc1m8bay0es 
-       foreign key (user_id) 
-       references users
-Hibernate: 
-    alter table if exists turnos 
-       add constraint FKdytm0i9wh1xdnu8kcujkdqrrt 
-       foreign key (professional_id) 
-       references medical_staff
-Hibernate: 
-    alter table if exists turnos 
-       add constraint FK4okcqr9iqt2iw6xhy1ppsmo3l 
-       foreign key (paciente_id) 
-       references pacientes
-2024-07-30T09:19:22.824-05:00  INFO 20792 --- [justina] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2024-07-30T09:19:23.646-05:00  INFO 20792 --- [justina] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2024-07-30T09:19:24.513-05:00  INFO 20792 --- [justina] [           main] i.j.management.JustinaApplicationTests   : Started JustinaApplicationTests in 10.344 seconds (process running for 11.484)
+2024-07-30T09:44:19.216-05:00  INFO 8660 --- [justina] [           main] i.j.management.JustinaApplicationTests   : Starting JustinaApplicationTests using Java 21.0.2 with PID 8660 (started by gvill in C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend)
+2024-07-30T09:44:19.217-05:00  INFO 8660 --- [justina] [           main] i.j.management.JustinaApplicationTests   : No active profile set, falling back to 1 default profile: "default"
+2024-07-30T09:44:20.350-05:00  INFO 8660 --- [justina] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-07-30T09:44:20.429-05:00  INFO 8660 --- [justina] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 5 JPA repository interfaces.
+2024-07-30T09:44:21.120-05:00  INFO 8660 --- [justina] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-07-30T09:44:21.191-05:00  INFO 8660 --- [justina] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-07-30T09:44:21.267-05:00  INFO 8660 --- [justina] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-07-30T09:44:21.721-05:00  INFO 8660 --- [justina] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-07-30T09:44:21.754-05:00  INFO 8660 --- [justina] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-07-30T09:44:23.438-05:00  INFO 8660 --- [justina] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@794d28a3
+2024-07-30T09:44:23.440-05:00  INFO 8660 --- [justina] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-07-30T09:44:25.105-05:00  INFO 8660 --- [justina] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-07-30T09:44:27.989-05:00  INFO 8660 --- [justina] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-07-30T09:44:28.837-05:00  INFO 8660 --- [justina] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
+2024-07-30T09:44:29.717-05:00  INFO 8660 --- [justina] [           main] i.j.management.JustinaApplicationTests   : Started JustinaApplicationTests in 10.812 seconds (process running for 12.074)
 DOCUMENTACION SWAGGER: http://localhost:10000/swagger-ui.html
 ]]></system-out>
   </testcase>
