@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.List;
+
+import java.io.Serializable;
+
 
 /**
  * Clase que representa al personal médico.
@@ -21,7 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "medical_staff")
-public class MedicalStaff {
+public class MedicalStaff implements Serializable {
 
     /**
      * Identificador único del personal médico.
@@ -29,7 +31,7 @@ public class MedicalStaff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_personal_medico")
-    private Long medicalStaffId;
+    private Long id;
 
     /**
      * Usuario asociado a este personal médico.
@@ -63,10 +65,6 @@ public class MedicalStaff {
     @Column(name = "descripcion")
     private String description;
 
-    /**
-     * Lista de citas programadas para este personal médico.
-     */
-    @OneToMany(mappedBy = "professional")
-    private List<Appointment> appointments;
+
 
 }

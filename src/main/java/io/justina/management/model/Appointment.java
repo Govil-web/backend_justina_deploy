@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 /**
  * Clase que representa un turno médico.
  * Esta entidad está mapeada a la tabla "turnos" en la base de datos.
@@ -25,41 +25,34 @@ public class Appointment {
      * Identificador único del turno.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_turno")
-    private UUID idAppointment;
-
-    /**
-     * Especialidad del turno.
-     */
-    @Column(name = "especialidad")
-    private String speciality;
-
+    private Long id;
     /**
      * Centro de atención del turno.
      */
     @Column(name = "centro_atencion")
     private String healthCenter;
-
     /**
      * Fecha y hora del turno.
      */
     @Column(name = "fecha_turno")
     private LocalDateTime date;
-
     /**
      * Paciente asignado al turno.
      */
-    @ManyToOne
-    @JoinColumn(name = "id_paciente")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente_id")
     private Patient patient;
-
     /**
      * Personal médico asignado al turno.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
-    private MedicalStaff professional;
+    private MedicalStaff medicalStaff;
+
+
+
 
 
     /*

@@ -2,6 +2,7 @@ package io.justina.management.controller.financier;
 
 import io.justina.management.dto.financier.FinancierRegisterDTO;
 import io.justina.management.dto.financier.FinancierResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class FinancierController {
      *
      * @return ResponseEntity con la lista de financieros y el estado HTTP correspondiente.
      */
+    @Operation(summary = "Get all financiers")
     @GetMapping("/getAll")
     public ResponseEntity<List<FinancierResponseDTO>> getAllFinanciers() {
         return ResponseEntity.ok(financierService.getAllFinanciers());
@@ -46,9 +48,10 @@ public class FinancierController {
     /**
      * Maneja la solicitud GET para obtener un financiero por su ID.
      *
-     * @param id ID del financiero que se desea obtener.
+     * @param id id del financiero que se desea obtener.
      * @return ResponseEntity con el financiero encontrado y el estado HTTP correspondiente.
      */
+    @Operation(summary = "Get a financier by ID")
     @GetMapping("/{id}")
     public ResponseEntity<FinancierResponseDTO> getFinancierById(@PathVariable UUID id) {
         return ResponseEntity.ok(financierService.getFinancierById(id));
@@ -59,7 +62,7 @@ public class FinancierController {
      * @param financier DTO que contiene la información del financiero a registrar.
      * @return ResponseEntity con el financiero registrado y el estado HTTP correspondiente.
      */
-
+    @Operation(summary = "Register a new financier")
     @PostMapping("/register")
     public ResponseEntity<FinancierResponseDTO> registerFinancier(@RequestBody @Valid FinancierRegisterDTO financier) {
         return ResponseEntity.ok(financierService.registerFinancier(financier));

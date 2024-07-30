@@ -9,6 +9,8 @@ C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justin
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\controller\medicalstaff\MedicalStaffController.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\controller\patient\PatientController.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\controller\user\UserController.java
+C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\appointment\AppointmentDataRegisterDTO.java
+C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\appointment\AppointmentResponseDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\error\ErrorDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\financier\FinancierRegisterDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\financier\FinancierResponseDTO.java
@@ -27,7 +29,6 @@ C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justin
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\handler\GlobalExceptionHandler.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\JustinaApplication.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\model\Appointment.java
-C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\model\Especialidad.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\model\Financier.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\model\MedicalStaff.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\model\Patient.java

@@ -15,7 +15,7 @@ public class MedicalStaffResponseDTO {
     /**
      * Identificador único del personal médico.
      */
-    private Long medicalStaffId;
+    private Long id;
 
     /**
      * Nombre del personal médico.

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
      *
      * @param httpSecurity Configuración de seguridad HTTP
      * @return Cadena de filtros de seguridad configurada
-     * @throws Exception Si hay un error al configurar la seguridad
+     * @throws Exception Sí hay un error al configurar la seguridad
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -54,10 +54,15 @@ public class SecurityConfiguration {
                                 "v1/api/medical-staff/getActive", "v1/api/financier/getAll,",
                                 "v1/api/financier/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "v1/api/medical-staff/**").hasAnyRole("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getAll",
+                                "v1/api/appointment/getByPatient/**",
+                                "v1/api/appointment/getByMedicalStaff/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "v1/api/appointment/register").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "v1/api/user/register","v1/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST,  "v1/api/medical-staff/register",
                                 "v1/api/financier/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "v1/api/medical-staff/delete/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "v1/api/appointment/delete/**").hasAnyRole("ADMIN")
                         .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -68,7 +73,7 @@ public class SecurityConfiguration {
      *
      * @param authenticationConfiguration Configuración de autenticación
      * @return Administrador de autenticación configurado
-     * @throws Exception Si hay un error al obtener el administrador de autenticación
+     * @throws Exception Sí hay un error al obtener el administrador de autenticación
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)

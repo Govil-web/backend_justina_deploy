@@ -32,7 +32,7 @@ public class Patient implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_paciente")
-    private Long idPatient;
+    private Long id;
 
     /**
      * Usuario asociado a este paciente.
@@ -56,13 +56,13 @@ public class Patient implements Serializable {
     /**
      * Grupo sanguíneo del paciente.
      */
-    @Column(name = "grupo_sanguineo")
+    @Column(name = "grupo_sanguíneo")
     private String bloodType;
 
     /**
      * Factor sanguíneo del paciente.
      */
-    @Column(name = "factor_sanguineo")
+    @Column(name = "factor_sanguíneo")
     private String bloodFactor;
 
     /**
