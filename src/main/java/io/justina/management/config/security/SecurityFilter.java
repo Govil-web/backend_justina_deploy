@@ -84,13 +84,11 @@ public class SecurityFilter extends OncePerRequestFilter {
                     }
                 } else if (tokenService.hasRol(token, "ROLE_PATIENT")){
                     Patient patient = patientRepository.findByUser_Email(subject);
-                    System.out.println("This is patient: " + patient);
-                    if (patient != null) {
-                        Collection<? extends GrantedAuthority> authorities = patient.getUser().getAuthorities();
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(patient, null, authorities);
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                    System.out.println("This is patient: " + patient.getUser().getEmail());
+                    Collection<? extends GrantedAuthority> authorities = patient.getUser().getAuthorities();
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(patient, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
 
             }

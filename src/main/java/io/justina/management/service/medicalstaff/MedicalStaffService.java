@@ -83,33 +83,6 @@ public class MedicalStaffService implements IMedicalStaffService{
 
         return responseDTO;
     }
-//    @Override
-//    @Transactional
-//    public MedicalStaffResponseDTO registerMedicalStaff(MedicalStaffRegisterDTO medicalStaffRegisterDTO) {
-//        var user = userRepository.findByEmail(medicalStaffRegisterDTO.getEmail());
-//        if (user == null) {
-//            user = modelMapper.map(medicalStaffRegisterDTO, User.class);
-//            user.setPassword(passwordEncoder.encode(user.getPassword()));
-//            user.setRoleEnum(RoleEnum.ROLE_DOCTOR);
-//            user.setActive(true);
-//            userRepository.save(user);
-//        }
-//        MedicalStaff existingMedicalStaff = medicalStaffRepository.findByUser(user);
-//        if (existingMedicalStaff == null) {
-//            MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
-//            medicalStaff.setUser(user);
-//            medicalStaffRepository.save(medicalStaff);
-//            user.setMedicalStaff(medicalStaff);
-//            userRepository.save(user);
-//        }
-//        MedicalStaff savedMedicalStaff = medicalStaffRepository.findByUser(user);
-//        MedicalStaffResponseDTO responseDTO = modelMapper.map(savedMedicalStaff, MedicalStaffResponseDTO.class);
-//        responseDTO.setFirstName(user.getFirstName());
-//        responseDTO.setLastName(user.getLastName());
-//        responseDTO.setEmail(user.getEmail());
-//        return responseDTO;
-//    }
-
     /**
      * Obtiene la información de un miembro del personal médico por su ID.
      *

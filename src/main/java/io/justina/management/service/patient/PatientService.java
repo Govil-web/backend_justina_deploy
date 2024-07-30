@@ -3,7 +3,6 @@ package io.justina.management.service.patient;
 
 import io.justina.management.dto.patient.PatientRequestDTO;
 import io.justina.management.dto.patient.PatientResponseDTO;
-import io.justina.management.model.Patient;
 
 import java.util.List;
 /**
@@ -24,7 +23,7 @@ public interface PatientService {
      * @param patientId id del paciente que se desea obtener.
      * @return Objeto Patient correspondiente al paciente encontrado.
      */
-    Patient getPatientById(Long patientId);
+    PatientResponseDTO getPatientById(Long patientId);
 
     /**
      * Crea un nuevo paciente en el sistema.

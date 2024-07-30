@@ -105,7 +105,7 @@ public class TokenService implements ITokenService {
      * @param token El token JWT que se desea verificar
      * @param role El rol que se desea comprobar
      * @return true si el token contiene el rol especificado, false de lo contrario
-     * @throws RuntimeException Si ocurre un error al decodificar el token
+     * @throws RuntimeException Sí ocurre un error al decodificar el token
      */
     public boolean hasRol(String token, String role){
         if(token == null || token.isBlank()){

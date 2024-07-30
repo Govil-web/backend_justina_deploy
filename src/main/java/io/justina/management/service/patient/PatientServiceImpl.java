@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementación del servicio para gestionar pacientes en el sistema.
@@ -57,16 +58,30 @@ public class PatientServiceImpl implements PatientService {
                 .toList();
     }
     /**
-     * Obtiene un paciente por su ID.
-     *
-     * @param patientId    ID del paciente que se desea obtener.
-     * @return Objeto Patient correspondiente al paciente encontrado.
-     * @throws IllegalArgumentException Si no se encuentra un paciente con el ID especificado.
-     */
+        * Obtiene un paciente por su ID.
+        *
+        * @param patientId iD del paciente que se desea obtener.
+        * @return Objeto Patient correspondiente al paciente encontrado.
+        * @throws EntityNotFoundException Si no se encuentra un paciente con el ID especificado.
+        */
     @Override
-    public Patient getPatientById(Long patientId) {
-        return patientRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalArgumentException("Patient not found"));
+    public PatientResponseDTO getPatientById(Long patientId) {
+        Optional<Patient> patientOptional = patientRepository.findById(patientId);
+        if(patientOptional.isPresent()){
+            Patient patient = patientOptional.get();
+            PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
+            responseDTO.setFirstName(patient.getUser().getFirstName());
+            responseDTO.setLastName(patient.getUser().getLastName());
+            responseDTO.setEmail(patient.getUser().getEmail());
+            responseDTO.setIdentificationNumber(patient.getIdentificationNumber());
+            responseDTO.setBirthDate(patient.getBirthDate());
+            responseDTO.setBloodType(patient.getBloodType());
+            responseDTO.setBloodFactor(patient.getBloodFactor());
+            return responseDTO;
+        } else {
+            throw new IllegalArgumentException("Patient not found with id: " + patientId);
+
+        }
     }
     /**
      * Crea un nuevo paciente en el sistema.
@@ -107,37 +122,11 @@ public class PatientServiceImpl implements PatientService {
         return responseDTO;
     }
 
-//      @Override
-//      public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO){
-//          var user = userRepository.findByEmail(patientRequestDTO.getEmail());
-//          if (user == null) {
-//              user = modelMapper.map(patientRequestDTO, User.class);
-//              user.setPassword(passwordEncoder.encode(user.getPassword()));
-//              user.setRoleEnum(RoleEnum.ROLE_PATIENT);
-//              user.setActive(true);
-//              userRepository.save(user);
-//          }
-//            Patient existingPatient = patientRepository.findByUser(user);
-//            if (existingPatient == null) {
-//                Patient patient = modelMapper.map(patientRequestDTO, Patient.class);
-//                patient.setUser(user);
-//                patient.setBirthDate(LocalDate.parse(patientRequestDTO.getBirthDate()));
-//                patientRepository.save(patient);
-//                user.setPatient(patient);
-//                userRepository.save(user);
-//            }
-//            Patient savedPatient = patientRepository.findByUser(user);
-//            PatientResponseDTO responseDTO = modelMapper.map(savedPatient, PatientResponseDTO.class);
-//            responseDTO.setFirstName(user.getFirstName());
-//            responseDTO.setLastName(user.getLastName());
-//            responseDTO.setEmail(user.getEmail());
-//            return responseDTO;
-//      }
 
     /**
      * Desactiva a un paciente por su ID.
      *
-     * @param patientId ID del paciente que se desea desactivar.
+     * @param patientId iD del paciente que se desea desactivar.
      * @throws EntityNotFoundException Si no se encuentra un paciente con el ID especificado.
      */
     @Override

@@ -23,7 +23,13 @@ import java.util.List;
 @RequestMapping("v1/api/medical-staff")
 public class MedicalStaffController {
 
+    /**
+     * Servicio de personal médico que implementa la lógica de negocio.
+     */
     private final IMedicalStaffService medicalStaffService;
+    /**
+     * Servicio de autenticación y autorización para verificar accesos.
+     */
     private final AuthenticationService authenticationService;
     /**
      * Constructor que inyecta los servicios requeridos por el controlador.
@@ -77,7 +83,7 @@ public class MedicalStaffController {
      * Maneja la solicitud GET para obtener un miembro del personal médico por su ID.
      * Verifica si el usuario tiene acceso antes de devolver el resultado.
      *
-     * @param id ID del personal médico que se desea obtener.
+     * @param id id del personal médico que se desea obtener.
      * @return ResponseEntity con el personal médico encontrado y el estado HTTP correspondiente.
      */
     @GetMapping("/{id}")
@@ -94,7 +100,7 @@ public class MedicalStaffController {
      * Maneja la solicitud DELETE para desactivar un miembro del personal médico por su ID.
      * Verifica si el usuario tiene acceso antes de desactivar al personal médico.
      *
-     * @param id ID del personal médico que se desea desactivar.
+     * @param id id del personal médico que se desea desactivar.
      * @return ResponseEntity con el estado HTTP correspondiente.
      */
     @DeleteMapping("delete/{id}")
