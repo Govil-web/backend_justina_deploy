@@ -1,6 +1,7 @@
 package io.justina.management.model;
 
 
+import io.justina.management.enums.ReasonAppointmentEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,8 +32,14 @@ public class Appointment {
     /**
      * Centro de atención del turno.
      */
-    @Column(name = "centro_atencion")
+    @Column(name = "centro_atención")
     private String healthCenter;
+    /**
+     * Motivo del turno.
+     */
+    @Column(name = "motivo")
+    @Enumerated(EnumType.STRING)
+    private ReasonAppointmentEnum reason;
     /**
      * Fecha y hora del turno.
      */
@@ -50,6 +57,16 @@ public class Appointment {
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
     private MedicalStaff medicalStaff;
+    /**
+     * Estado del turno.
+     */
+    @Column(name = "activo")
+    private Boolean active;
+    /**
+     * Descripción del turno.
+     */
+    @Column(name = "descripción")
+    private String description;
 
 
 

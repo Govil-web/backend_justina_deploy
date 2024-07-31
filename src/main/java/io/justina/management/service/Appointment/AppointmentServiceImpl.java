@@ -65,6 +65,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         MedicalStaff medicalStaff = medicalStaffRepository.findById(appointmentData.getIdMedicalStaff()).orElseThrow(() -> new BadRequestException("El id del profesional no fue encontrado"));
 
         Appointment appointment = modelMapper.map(appointmentData, Appointment.class);
+        appointment.setActive(true);
         appointment = appointmentRepository.save(appointment);
 
         AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);

@@ -1,8 +1,8 @@
 package io.justina.management.dto.appointment;
 
-import io.justina.management.enums.Specialty;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +32,17 @@ public class AppointmentDataRegisterDTO {
     @NotNull(message = "El id del profesional no puede ser nulo")
     private Long idMedicalStaff;
     /**
+     * Motivo de la cita.
+     */
+    @NotNull(message = "El motivo no puede ser nulo")
+    @Size(min = 1, max = 255, message = "El motivo debe tener entre 1 y 255 caracteres")
+    private String reason;
+    /**
+     * Descripción de la cita.
+     */
+    @Size(max = 255, message = "La descripción debe tener hasta 255 caracteres")
+    private String description;
+    /**
      * Centro de salud.
      */
     private String healthCenter;
@@ -41,5 +52,6 @@ public class AppointmentDataRegisterDTO {
     @NotNull(message = "La fecha no puede ser nula")
     @Future(message = "La fecha debe ser futura")
     private LocalDateTime date;
+
 
 }

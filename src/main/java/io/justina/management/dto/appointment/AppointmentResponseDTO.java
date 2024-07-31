@@ -38,6 +38,14 @@ public class AppointmentResponseDTO {
      */
     private String specialty;
     /**
+     * Motivo de la cita.
+     */
+    private String reason;
+    /**
+     * Descripción de la cita.
+     */
+    private String description;
+    /**
      * Centro de salud.
      */
     private String healthCenter;
@@ -45,5 +53,9 @@ public class AppointmentResponseDTO {
      * Fecha de la cita.
      */
     private LocalDateTime date;
+    /**
+     * Estado de la cita.
+     */
+    private Boolean active;
 
 }

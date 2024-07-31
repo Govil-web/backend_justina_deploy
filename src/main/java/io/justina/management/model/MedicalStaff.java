@@ -43,7 +43,7 @@ public class MedicalStaff implements Serializable {
     /**
      * Número de teléfono del personal médico.
      */
-    @Column(name="telefono")
+    @Column(name="teléfono")
     private String phone;
 
     /**
@@ -62,7 +62,7 @@ public class MedicalStaff implements Serializable {
     /**
      * Descripción del personal médico.
      */
-    @Column(name = "descripcion")
+    @Column(name = "descripción")
     private String description;
 
 

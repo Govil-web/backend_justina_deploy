@@ -44,6 +44,7 @@ io\justina\management\dto\jwttoken\DataJWTTokenDTO.class
 io\justina\management\service\financier\IFinancierService.class
 io\justina\management\config\mapper\ModelMapperConfig.class
 io\justina\management\service\patient\PatientService.class
+io\justina\management\enums\ReasonAppointmentEnum.class
 io\justina\management\service\user\UserService$1.class
 io\justina\management\handler\GlobalExceptionHandler.class
 io\justina\management\dto\medicalstaff\MedicalStaffResponseDTO.class

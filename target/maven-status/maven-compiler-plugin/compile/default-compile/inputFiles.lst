@@ -22,6 +22,7 @@ C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justin
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\user\UserAuthenticateDataDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\user\UserRegisterDataDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\user\UserResponseDataDTO.java
+C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\enums\ReasonAppointmentEnum.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\enums\RoleEnum.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\enums\Specialty.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\exception\BadRequestException.java
