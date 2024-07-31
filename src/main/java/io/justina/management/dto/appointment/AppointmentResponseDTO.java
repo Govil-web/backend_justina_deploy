@@ -22,9 +22,21 @@ public class AppointmentResponseDTO {
      */
     private Long idPatient;
     /**
+     * Nombre del paciente.
+     */
+    private String fullNamePatient;
+    /**
      * Identificador del profesional.
      */
     private Long idMedicalStaff;
+    /**
+     * Nombre del profesional.
+     */
+    private String fullNameMedicalStaff;
+    /**
+     * Especialidad del profesional.
+     */
+    private String specialty;
     /**
      * Centro de salud.
      */

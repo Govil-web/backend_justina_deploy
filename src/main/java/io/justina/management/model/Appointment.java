@@ -41,13 +41,13 @@ public class Appointment {
     /**
      * Paciente asignado al turno.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id")
     private Patient patient;
     /**
      * Personal médico asignado al turno.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id")
     private MedicalStaff medicalStaff;
 

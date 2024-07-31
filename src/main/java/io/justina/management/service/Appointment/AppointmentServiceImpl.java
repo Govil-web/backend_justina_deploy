@@ -4,16 +4,17 @@ import io.justina.management.dto.appointment.AppointmentDataRegisterDTO;
 import io.justina.management.dto.appointment.AppointmentResponseDTO;
 import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.Appointment;
+import io.justina.management.model.MedicalStaff;
+import io.justina.management.model.Patient;
 import io.justina.management.repository.AppointmentRepository;
 import io.justina.management.repository.MedicalStaffRepository;
 import io.justina.management.repository.PatientRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,15 +54,28 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     @Override
     public AppointmentResponseDTO registerAppointment(AppointmentDataRegisterDTO appointmentData) {
-        if(!patientRepository.existsById(appointmentData.getIdPatient())){
+        if (!patientRepository.existsById(appointmentData.getIdPatient())) {
             throw new BadRequestException("El id del paciente no fue encontrado");
         }
-        if(!medicalStaffRepository.existsById(appointmentData.getIdMedicalStaff())){
+        if (!medicalStaffRepository.existsById(appointmentData.getIdMedicalStaff())) {
             throw new BadRequestException("El id del profesional no fue encontrado");
         }
+
+        Patient patient = patientRepository.findById(appointmentData.getIdPatient()).orElseThrow(() -> new BadRequestException("El id del paciente no fue encontrado"));
+        MedicalStaff medicalStaff = medicalStaffRepository.findById(appointmentData.getIdMedicalStaff()).orElseThrow(() -> new BadRequestException("El id del profesional no fue encontrado"));
+
         Appointment appointment = modelMapper.map(appointmentData, Appointment.class);
         appointment = appointmentRepository.save(appointment);
-        return modelMapper.map(appointment, AppointmentResponseDTO.class);
+
+        AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);
+        responseDTO.setIdPatient(patient.getId());
+        responseDTO.setFullNamePatient(patient.getUser().getFirstName()+ " " + patient.getUser().getLastName());
+        responseDTO.setIdMedicalStaff(medicalStaff.getId());
+        responseDTO.setFullNameMedicalStaff(medicalStaff.getUser().getFirstName() + " " + medicalStaff.getUser().getLastName());
+        responseDTO.setSpecialty(medicalStaff.getSpecialities().toString());
+        responseDTO.setHealthCenter(appointmentData.getHealthCenter());
+
+        return responseDTO;
     }
 
     /**
@@ -72,8 +86,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentResponseDTO> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
-        Type listType = new TypeToken<List<AppointmentResponseDTO>>() {}.getType();
-        return modelMapper.map(appointments, listType);
+        return getAppointmentResponseDTOS(appointments);
     }
     /**
      * Obtiene todas las citas médicas registradas en el sistema para un paciente específico.
@@ -84,8 +97,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentResponseDTO> getAppointmentsByPatient(Long idPatient) {
         List<Appointment> appointments = appointmentRepository.findByPatient_Id(idPatient);
-        Type listType = new TypeToken<List<AppointmentResponseDTO>>() {}.getType();
-        return modelMapper.map(appointments, listType);
+        return getAppointmentResponseDTOS(appointments);
     }
     /**
      * Obtiene todas las citas médicas registradas en el sistema para un médico específico.
@@ -96,9 +108,30 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentResponseDTO> getAppointmentsByMedicalStaff(Long idDoctor) {
         List<Appointment> appointments = appointmentRepository.findByMedicalStaff_Id(idDoctor);
-        Type listType = new TypeToken<List<AppointmentResponseDTO>>() {}.getType();
-        return modelMapper.map(appointments, listType);
+        return getAppointmentResponseDTOS(appointments);
     }
+
+    private List<AppointmentResponseDTO> getAppointmentResponseDTOS(List<Appointment> appointments) {
+        List<AppointmentResponseDTO> responseDTOs = new ArrayList<>();
+
+        for (Appointment appointment : appointments) {
+            Patient patient = appointment.getPatient();
+            MedicalStaff medicalStaff = appointment.getMedicalStaff();
+
+            AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);
+            responseDTO.setIdPatient(patient.getId());
+            responseDTO.setFullNamePatient(patient.getUser().getFirstName() + " " + patient.getUser().getLastName());
+            responseDTO.setIdMedicalStaff(medicalStaff.getId());
+            responseDTO.setFullNameMedicalStaff(medicalStaff.getUser().getFirstName() + " " + medicalStaff.getUser().getLastName());
+            responseDTO.setSpecialty(medicalStaff.getSpecialities().toString());
+            responseDTO.setHealthCenter(appointment.getHealthCenter());
+
+            responseDTOs.add(responseDTO);
+        }
+
+        return responseDTOs;
+    }
+
     /**
      * Elimina una cita médica del sistema.
      *
