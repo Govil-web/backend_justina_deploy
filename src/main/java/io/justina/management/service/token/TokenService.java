@@ -48,7 +48,7 @@ public class TokenService implements ITokenService {
             String token;
             switch (entity) {
                 case User user -> {
-                    System.out.println("Generating token for User");
+                    System.out.println("Generating token for User " + user.getEmail() + " with id " + user.getPrimaryKey() + " and role " + user.getRoleEnum().name());
                     token = jwtBuilder
                             .withSubject(user.getEmail())
                             .withClaim("id", user.getPrimaryKey())
@@ -58,7 +58,7 @@ public class TokenService implements ITokenService {
                             .sign(algorithm);
                 }
                 case Patient patient -> {
-                    System.out.println("Generating token for Patient");
+                    System.out.println("Generating token for Patient " + patient.getEmail() + " with id " + patient.getPrimaryKey() + " and role " + patient.getRoleEnum().name());
                     token = jwtBuilder
                             .withSubject(patient.getEmail())
                             .withClaim("id", patient.getPrimaryKey())
@@ -68,7 +68,7 @@ public class TokenService implements ITokenService {
                             .sign(algorithm);
                 }
                 case MedicalStaff medicalStaff -> {
-                    System.out.println("Generating token for MedicalStaff");
+                    System.out.println("Generating token for MedicalStaff " + medicalStaff.getEmail() + " with id " + medicalStaff.getPrimaryKey() + " and role " + medicalStaff.getRoleEnum().name());
                     token = jwtBuilder
                             .withSubject(medicalStaff.getEmail())
                             .withClaim("id", medicalStaff.getPrimaryKey())
@@ -84,61 +84,6 @@ public class TokenService implements ITokenService {
             throw new BadRequestException("Fallo la creación del token.");
         }
     }
-//    public String generateToken(Object entity){
-//        try{
-//            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-//            JWTCreator.Builder jwtBuilder = JWT.create().withIssuer("justina.io");
-//            String token;
-//            return switch (entity) {
-//                case User user -> {
-//                    token = jwtBuilder
-//                        .withSubject(user.getEmail())
-//                        .withClaim("id", user.getId())
-//                        .withClaim("role", user.getRoleEnum().name())
-//                        .withClaim("authorities", getRoles(user))
-//                        .withExpiresAt(generateExpirationDate())
-//                        .sign(algorithm);}
-//                case Patient patient -> jwtBuilder
-//                        .withSubject(patient.getEmail())
-//                        .withClaim("id", patient.getId())
-//                        .withClaim("role", patient.getRoleEnum().name())
-//                        .withClaim("authorities", getRoles(patient))
-//                        .withExpiresAt(generateExpirationDate())
-//                        .sign(algorithm);
-//                case MedicalStaff medicalStaff -> jwtBuilder
-//                        .withSubject(medicalStaff.getEmail())
-//                        .withClaim("id", medicalStaff.getId())
-//                        .withClaim("role", medicalStaff.getRoleEnum().name())
-//                        .withClaim("authorities", getRoles(medicalStaff))
-//                        .withExpiresAt(generateExpirationDate())
-//                        .sign(algorithm);
-//                case null, default ->
-//                        throw new IllegalArgumentException("Entity type not supported to generate token.");
-//            };
-//        }catch (JWTCreationException exception){
-//            throw new RuntimeException("Failed to create token.");
-//        }
-//    }
-//    public String generateToken(User user){
-//        if(user == null){
-//            throw new IllegalArgumentException("User cannot be null");
-//        }
-//        try{
-//            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-//            JWTCreator.Builder jwtBuilder = JWT.create().withIssuer("justina.io");
-//            return jwtBuilder
-//                    .withSubject(user.getEmail())
-//                    .withClaim("id", user.getId())
-//                    .withClaim("role", user.getRoleEnum().name())
-//                    .withClaim("authorities", getRoles(user))
-//                    .withExpiresAt(generateExpirationDate())
-//                    .sign(algorithm);
-//
-//        }catch (JWTCreationException exception){
-//            throw new RuntimeException("Failed to create token.");
-//        }
-//    }
-
     /**
      * Obtiene el sujeto (subject) del token JWT proporcionado.
      *
@@ -185,7 +130,7 @@ public class TokenService implements ITokenService {
             case MedicalStaff medicalStaff -> medicalStaff.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
-            case null, default -> throw new BadRequestException("User type not supported to get roles.");
+            case null, default -> throw new BadRequestException("Usuario no soportado para obtener roles.");
         };
     }
 
@@ -199,7 +144,7 @@ public class TokenService implements ITokenService {
      */
     public boolean hasRol(String token, String role){
         if(token == null || token.isBlank()){
-            throw new RuntimeException("Token cannot be null or empty.");
+            throw new BadRequestException("Token no puede ser nulo o vacío.");
         }
         try{
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
@@ -221,6 +166,6 @@ public class TokenService implements ITokenService {
      * @return La fecha de expiración del token JWT (1 hora desde ahora)
      */
     private Instant generateExpirationDate(){
-        return LocalDateTime.now().plusHours(72).toInstant(ZoneOffset.of("-05:00"));
+        return LocalDateTime.now().plusHours(168).toInstant(ZoneOffset.of("-05:00"));
     }
 }

@@ -54,33 +54,33 @@ public class AppointmentController {
     /**
      * Maneja la solicitud GET para obtener todas las citas médicas de un paciente.
      *
-     * @param idPatient Identificador del paciente.
+     * @param id Identificador del paciente.
      * @return ResponseEntity con la lista de citas médicas y el estado HTTP correspondiente.
      */
     @Operation(summary = "Get all appointments by patient")
-    @GetMapping("/getByPatient/{idPatient}")
-    public ResponseEntity<List<AppointmentResponseDTO>> getByPatient(@PathVariable Long idPatient) {
+    @GetMapping("/getByPatient/{id}")
+    public ResponseEntity<List<AppointmentResponseDTO>> getByPatient(@PathVariable Long id) {
         try{
-            authenticationService.verifyUserAccess(idPatient);
-            return new ResponseEntity<>(appointmentService.getAppointmentsByPatient(idPatient), HttpStatus.OK);
+            authenticationService.verifyUserAccess(id);
+            return ResponseEntity.ok(appointmentService.getAppointmentsByPatient(id));
         }catch (AccessDeniedException e){
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
     /**
      * Maneja la solicitud GET para obtener todas las citas médicas de un médico.
      *
-     * @param idDoctor Identificador del médico.
+     * @param id Identificador del médico.
      * @return ResponseEntity con la lista de citas médicas y el estado HTTP correspondiente.
      */
     @Operation(summary = "Get all appointments by medical staff")
-    @GetMapping("/getByMedicalStaff/{idDoctor}")
-    public ResponseEntity<List<AppointmentResponseDTO>> getByMedicalStaff(@PathVariable Long idDoctor) {
+    @GetMapping("/getByMedicalStaff/{id}")
+    public ResponseEntity<List<AppointmentResponseDTO>> getByMedicalStaff(@PathVariable Long id) {
         try{
-            authenticationService.verifyUserAccess(idDoctor);
-            return new ResponseEntity<>(appointmentService.getAppointmentsByMedicalStaff(idDoctor), HttpStatus.OK);
+            authenticationService.verifyUserAccess(id);
+            return ResponseEntity.ok(appointmentService.getAppointmentsByMedicalStaff(id));
         }catch (AccessDeniedException e){
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
     /**

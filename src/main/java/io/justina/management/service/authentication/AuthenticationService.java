@@ -5,7 +5,6 @@ import io.justina.management.dto.user.UserAuthenticateDataDTO;
 import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.MedicalStaff;
 import io.justina.management.model.Patient;
-import io.justina.management.model.User;
 import io.justina.management.repository.MedicalStaffRepository;
 import io.justina.management.repository.PatientRepository;
 import io.justina.management.repository.UserRepository;
@@ -71,7 +70,7 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
             userDetails = medicalStaffRepository.findByEmail(username);
         }
         if(userDetails == null){
-            throw new UsernameNotFoundException("User not found");
+            throw new BadRequestException("Usuario no encontrado");
         }
         return userDetails;
     }
@@ -82,30 +81,14 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      * @return DTO que contiene el token JWT generado.
      */
     @Override
-    public DataJWTTokenDTO authenticate(UserAuthenticateDataDTO userAuthenticateDataDTO){
+    public DataJWTTokenDTO authenticate(UserAuthenticateDataDTO userAuthenticateDataDTO) {
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(userAuthenticateDataDTO.getEmail(), userAuthenticateDataDTO.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         var entityAuth = authentication.getPrincipal();
-        String jwtToken;
-        if (entityAuth instanceof User) {
-            jwtToken = tokenService.generateToken(entityAuth);
-        } else if (entityAuth instanceof MedicalStaff) {
-           jwtToken = tokenService.generateToken(entityAuth);
-        } else if (entityAuth instanceof Patient) {
-            jwtToken = tokenService.generateToken(entityAuth);
-        } else {
-            throw new BadRequestException("Entidad no encontrada");
-        }
+        String jwtToken = tokenService.generateToken(entityAuth);
+        System.out.println("Generated token: " + jwtToken + " for user: " + userAuthenticateDataDTO.getEmail());
         return new DataJWTTokenDTO(jwtToken);
     }
-//    @Override
-//    public DataJWTTokenDTO authenticate(UserAuthenticateDataDTO userAuthenticateDataDTO){
-//        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(userAuthenticateDataDTO.getEmail(), userAuthenticateDataDTO.getPassword());
-//        var entityAuth = authenticationManager.authenticate(authenticationToken).getPrincipal();
-//        var jwtToken = tokenService.generateToken(entityAuth);
-//            return new DataJWTTokenDTO(jwtToken);
-//    }
-
     /**
      * Verifica si el usuario autenticado tiene el rol de administrador.
      *

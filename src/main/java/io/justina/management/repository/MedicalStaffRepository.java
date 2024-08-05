@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Repository
 public interface MedicalStaffRepository extends JpaRepository<MedicalStaff, Long> {
-    List<MedicalStaff> findByActive(Boolean active);
+    List<MedicalStaff> findByActiveTrue();
     MedicalStaff findByEmail(String email);
     boolean existsByEmail(String email);
 

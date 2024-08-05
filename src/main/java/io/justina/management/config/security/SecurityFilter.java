@@ -14,14 +14,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collection;
+
 /**
  * Filtro de seguridad para validar y establecer la autenticación basada en tokens JWT.
  * Extiende OncePerRequestFilter para garantizar que se ejecute una vez por cada solicitud.
@@ -66,23 +65,20 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (subject != null) {
                 if(tokenService.hasRol(token, "ROLE_ADMIN")){
                     User user = userRepository.findByEmail(subject);
-                    System.out.println("This is user: " + user.getUsername());
-                    Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+                    System.out.println("This is user: " + user.getUsername() + " with role: " + user.getRoleEnum());
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                    //authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else if(tokenService.hasRol(token, "ROLE_DOCTOR")){
                     MedicalStaff medicalStaff = medicalStaffRepository.findByEmail(subject);
-                    System.out.println("This is medicalStaff: " + medicalStaff.getUsername());
-                    Collection<? extends GrantedAuthority> authorities = medicalStaff.getAuthorities();
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(medicalStaff, null, authorities);
+                    System.out.println("This is medicalStaff: " + medicalStaff.getUsername() + " with role: " + medicalStaff.getRoleEnum());
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(medicalStaff, null, medicalStaff.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else if (tokenService.hasRol(token, "ROLE_PATIENT")){
                     Patient patient = patientRepository.findByEmail(subject);
-                    System.out.println("This is patient: " + patient.getUsername());
-                    Collection<? extends GrantedAuthority> authorities = patient.getAuthorities();
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(patient, null, authorities);
+                    System.out.println("This is patient: " + patient.getUsername()  + " with role: " + patient.getRoleEnum());
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(patient, null, patient.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

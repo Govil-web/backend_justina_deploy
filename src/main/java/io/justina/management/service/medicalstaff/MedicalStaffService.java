@@ -87,7 +87,7 @@ public class MedicalStaffService implements IMedicalStaffService{
      */
     @Override
     public List<MedicalStaffResponseDTO> getMedicalStaffByActive() {
-        List<MedicalStaff> medicalStaffs = medicalStaffRepository.findByActive(true);
+        List<MedicalStaff> medicalStaffs = medicalStaffRepository.findByActiveTrue();
         return getMedicalStaffResponseDTOS(medicalStaffs);
     }
     /**

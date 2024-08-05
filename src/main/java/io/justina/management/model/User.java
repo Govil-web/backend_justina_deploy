@@ -1,6 +1,5 @@
 package io.justina.management.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.justina.management.enums.RoleEnum;
 import io.justina.management.utils.interfaces.Identifiable;
 import jakarta.persistence.*;
@@ -83,7 +82,7 @@ public class User implements UserDetails, Identifiable {
      */
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     /**
@@ -91,7 +90,7 @@ public class User implements UserDetails, Identifiable {
      */
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
     }
 
     /**
