@@ -1,6 +1,8 @@
 package io.justina.management.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.justina.management.enums.RoleEnum;
+import io.justina.management.utils.interfaces.Identifiable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,11 +21,10 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "usuarios")
-@ToString
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User implements UserDetails, Identifiable {
 
     /**
      * Identificador único del usuario.
@@ -69,24 +70,12 @@ public class User implements UserDetails {
     private Boolean active;
 
     /**
-     * Personal médico asociado a este usuario (si aplica).
-     */
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private MedicalStaff medicalStaff;
-
-    /**
-     * Paciente asociado a este usuario (si aplica).
-     */
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Patient patient;
-
-    /**
      * Método para obtener los roles/autoridades del usuario.
      * En este caso, devuelve un único rol basado en el enum `RoleEnum`.
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(roleEnum.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     /**
@@ -139,5 +128,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public Long getPrimaryKey() {
+        return this.id;
     }
 }

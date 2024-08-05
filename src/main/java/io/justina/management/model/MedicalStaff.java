@@ -1,15 +1,20 @@
 package io.justina.management.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.justina.management.enums.RoleEnum;
 import io.justina.management.enums.Specialty;
+import io.justina.management.utils.interfaces.Identifiable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -24,7 +29,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "medical_staff")
-public class MedicalStaff implements Serializable {
+public class MedicalStaff implements UserDetails,Identifiable {
 
     /**
      * Identificador único del personal médico.
@@ -33,13 +38,42 @@ public class MedicalStaff implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_personal_medico")
     private Long id;
+    /**
+     * Nombre del usuario.
+     */
+    @Column(name = "nombre")
+    private String firstName;
 
     /**
-     * Usuario asociado a este personal médico.
+     * Apellido del usuario.
      */
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "apellido")
+    private String lastName;
+
+    /**
+     * Rol del usuario.
+     */
+    @Enumerated(EnumType.STRING)
+    private RoleEnum roleEnum;
+
+    /**
+     * Correo electrónico del usuario (también utilizado como nombre de usuario).
+     */
+    @Column(name = "email", unique = true)
+    private String email;
+
+    /**
+     * Contraseña del usuario.
+     */
+    @Column(name = "password")
+    private String password;
+
+    /**
+     * Estado de activo/inactivo del usuario.
+     */
+    @Column(name = "activo")
+    private Boolean active;
+
 
     /**
      * Número de teléfono del personal médico.
@@ -67,5 +101,45 @@ public class MedicalStaff implements Serializable {
     private String description;
 
 
+    @Override
+    public Long getPrimaryKey() {
+        return this.id;
+    }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_DOCTOR"));
+    }
+    /**
+     * Método para obtener la contraseña del usuario.
+     */
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

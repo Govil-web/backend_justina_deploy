@@ -3,19 +3,16 @@ package io.justina.management.service.medicalstaff;
 import io.justina.management.dto.medicalstaff.MedicalStaffRegisterDTO;
 import io.justina.management.dto.medicalstaff.MedicalStaffResponseDTO;
 import io.justina.management.enums.RoleEnum;
+import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.MedicalStaff;
-import io.justina.management.model.User;
 import io.justina.management.repository.MedicalStaffRepository;
-import io.justina.management.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 /**
  * Servicio para la gestión del personal médico.
@@ -27,19 +24,18 @@ public class MedicalStaffService implements IMedicalStaffService{
 
     private final MedicalStaffRepository medicalStaffRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+
     /**
      * Constructor para la clase MedicalStaffService.
      *
      * @param medicalStaffRepository Repositorio de personal médico
-     * @param userRepository Repositorio de usuarios
      * @param passwordEncoder Codificador de contraseñas
      */
     @Autowired
-    public MedicalStaffService(MedicalStaffRepository medicalStaffRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public MedicalStaffService(MedicalStaffRepository medicalStaffRepository, PasswordEncoder passwordEncoder) {
         this.medicalStaffRepository = medicalStaffRepository;
         this.passwordEncoder = (BCryptPasswordEncoder) passwordEncoder;
-        this.userRepository = userRepository;
+
     }
 
     private final ModelMapper modelMapper = new ModelMapper();
@@ -53,38 +49,12 @@ public class MedicalStaffService implements IMedicalStaffService{
     @Override
     @Transactional
     public MedicalStaffResponseDTO registerMedicalStaff(MedicalStaffRegisterDTO medicalStaffRegisterDTO) {
-        User existingUser = userRepository.findByEmail(medicalStaffRegisterDTO.getEmail());
-        if (existingUser != null) {
-            throw new RuntimeException("User already exists with email: " + medicalStaffRegisterDTO.getEmail());
-        }
-
-        User user = modelMapper.map(medicalStaffRegisterDTO, User.class);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoleEnum(RoleEnum.ROLE_DOCTOR);
-        user.setActive(true);
-        user = userRepository.save(user);
-
-        MedicalStaff existingMedicalStaff = medicalStaffRepository.findByUser(user);
-        if (existingMedicalStaff != null) {
-            throw new RuntimeException("MedicalStaff already exists for user with email: " + medicalStaffRegisterDTO.getEmail());
-        }
-
         MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
-        medicalStaff.setUser(user);
-        medicalStaff.setId(medicalStaff.getUser().getId());
-
+        medicalStaff.setPassword(passwordEncoder.encode(medicalStaffRegisterDTO.getPassword()));
+        medicalStaff.setRoleEnum(RoleEnum.ROLE_DOCTOR);
+        medicalStaff.setActive(true);
         medicalStaff = medicalStaffRepository.save(medicalStaff);
-
-        user.setMedicalStaff(medicalStaff);
-        user = userRepository.save(user);
-
-        MedicalStaffResponseDTO responseDTO = modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
-        responseDTO.setId(user.getId());
-        responseDTO.setFirstName(user.getFirstName());
-        responseDTO.setLastName(user.getLastName());
-        responseDTO.setEmail(user.getEmail());
-
-        return responseDTO;
+        return modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
     }
     /**
      * Obtiene la información de un miembro del personal médico por su ID.
@@ -95,18 +65,9 @@ public class MedicalStaffService implements IMedicalStaffService{
      */
     @Override
     public MedicalStaffResponseDTO getMedicalStaffById(Long id) {
-        Optional<MedicalStaff> medicalStaffOpt = medicalStaffRepository.findById(id);
-        if (medicalStaffOpt.isPresent()) {
-            MedicalStaff medicalStaff = medicalStaffOpt.get();
-            MedicalStaffResponseDTO responseDTO = modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
-            User user = medicalStaff.getUser();
-            responseDTO.setFirstName(user.getFirstName());
-            responseDTO.setLastName(user.getLastName());
-            responseDTO.setEmail(user.getEmail());
-            return responseDTO;
-        } else {
-            throw new RuntimeException("Medical Staff not found with id: " + id);
-        }
+        MedicalStaff medicalStaff = medicalStaffRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Medical Staff not found with id: " + id));
+        return modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
     }
     /**
      * Obtiene la lista de todo el personal médico registrado.
@@ -126,7 +87,7 @@ public class MedicalStaffService implements IMedicalStaffService{
      */
     @Override
     public List<MedicalStaffResponseDTO> getMedicalStaffByActive() {
-        List<MedicalStaff> medicalStaffs = medicalStaffRepository.findByUser_ActiveTrue();
+        List<MedicalStaff> medicalStaffs = medicalStaffRepository.findByActive(true);
         return getMedicalStaffResponseDTOS(medicalStaffs);
     }
     /**
@@ -138,17 +99,9 @@ public class MedicalStaffService implements IMedicalStaffService{
     @Transactional
     @Override
     public void deactivateMedicalStaff(Long id) {
-
         MedicalStaff medicalStaff = medicalStaffRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical Staff not found with id: " + id));
-
-        User user = medicalStaff.getUser();
-        if (user != null) {
-            user.setActive(false);
-            userRepository.save(user);
-        } else {
-            throw new RuntimeException("User not found for Medical Staff with id: " + id);
-        }
+        medicalStaff.setActive(false);
     }
 
     /**
@@ -159,17 +112,7 @@ public class MedicalStaffService implements IMedicalStaffService{
      */
     private List<MedicalStaffResponseDTO> getMedicalStaffResponseDTOS(List<MedicalStaff> medicalStaffs) {
         return medicalStaffs.stream()
-                .map(medicalStaff -> {
-                    MedicalStaffResponseDTO dto = modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
-                    User user = medicalStaff.getUser();
-                    if (user != null) {
-                        dto.setFirstName(user.getFirstName());
-                        dto.setLastName(user.getLastName());
-                        dto.setEmail(user.getEmail());
-                        dto.setActive(user.getActive());
-                    }
-                    return dto;
-                })
+                .map(medicalStaff -> modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class))
                 .collect(Collectors.toList());
     }
 

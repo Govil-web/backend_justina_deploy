@@ -1,14 +1,21 @@
 package io.justina.management.model;
 
 
+
+import io.justina.management.enums.RoleEnum;
+import io.justina.management.utils.interfaces.Identifiable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -24,7 +31,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "pacientes")
 @Entity
-public class Patient implements Serializable {
+public class Patient implements  Identifiable, UserDetails {
 
     /**
      * Identificador único del paciente.
@@ -35,11 +42,41 @@ public class Patient implements Serializable {
     private Long id;
 
     /**
-     * Usuario asociado a este paciente.
+     * Nombre del usuario.
      */
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "nombre")
+    private String firstName;
+
+    /**
+     * Apellido del usuario.
+     */
+    @Column(name = "apellido")
+    private String lastName;
+
+    /**
+     * Rol del usuario.
+     */
+    @Enumerated(EnumType.STRING)
+    private RoleEnum roleEnum;
+
+    /**
+     * Correo electrónico del usuario (también utilizado como nombre de usuario).
+     */
+    @Column(name = "email", unique = true)
+    private String email;
+
+    /**
+     * Contraseña del usuario.
+     */
+    @Column(name = "password")
+    private String password;
+
+    /**
+     * Estado de activo/inactivo del usuario.
+     */
+    @Column(name = "activo")
+    private Boolean active;
+
 
     /**
      * Número de documento del paciente.
@@ -66,12 +103,6 @@ public class Patient implements Serializable {
     private String bloodFactor;
 
     /**
-     * Estado de activo/inactivo del paciente.
-     */
-    @Column(name = "activo")
-    private Boolean active;
-
-    /**
      * Sexo del paciente (M, F, etc.).
      */
     @Column(name = "sexo")
@@ -82,6 +113,48 @@ public class Patient implements Serializable {
      */
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Appointment> appointments;
+
+    @Override
+    public Long getPrimaryKey() {
+        return this.id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_PATIENT"));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+    /**
+     * Método para obtener la contraseña del usuario.
+     */
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     /*
      * Posibles relaciones adicionales que pueden estar presentes en el sistema:

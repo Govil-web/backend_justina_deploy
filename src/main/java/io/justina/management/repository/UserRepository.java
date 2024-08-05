@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
     /**
      * Busca y devuelve el usuario asociado al correo electrónico especificado.
      *

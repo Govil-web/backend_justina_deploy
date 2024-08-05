@@ -2,10 +2,7 @@ package io.justina.management.repository;
 
 
 import io.justina.management.model.Patient;
-import io.justina.management.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,24 +12,20 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-
     /**
-     * Busca y devuelve el paciente asociado al usuario especificado.
+     * Busca y devuelve el paciente asociado al correo electrónico especificado.
      *
-     * @param user Usuario asociado al paciente.
-     * @return El paciente asociado al usuario especificado.
+     * @param email Correo electrónico del paciente a buscar.
+     * @return El paciente asociado al correo electrónico especificado.
      */
-    Patient findByUser(User user);
-
+    Patient findByEmail(String email);
     /**
-     * Busca y devuelve el paciente asociado al usuario con el correo electrónico especificado.
+     * Verifica si existe un paciente con el correo electrónico especificado.
      *
-     * @param email Correo electrónico del usuario asociado al paciente
-     * @return El paciente asociado al usuario con el correo electrónico especificado.
+     * @param email Correo electrónico del paciente a verificar.
+     * @return Verdadero si existe un paciente con el correo electrónico especificado, falso en caso contrario.
      */
-    Patient findByUser_Email(String email);
-    Patient findByUser_Id (Long id);
-    @Query("SELECT p FROM Patient p WHERE p.id = :id")
-    Patient findByPatient_Id(@Param("id") Long id);
+    boolean existsByEmail(String email);
+
 }
 

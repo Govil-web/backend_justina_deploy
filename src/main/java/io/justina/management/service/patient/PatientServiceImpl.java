@@ -1,22 +1,19 @@
 package io.justina.management.service.patient;
 
 
+import io.justina.management.config.mapper.ModelMapperConfig;
 import io.justina.management.dto.patient.PatientRequestDTO;
 import io.justina.management.dto.patient.PatientResponseDTO;
 import io.justina.management.enums.RoleEnum;
 import io.justina.management.model.Patient;
-import io.justina.management.model.User;
 import io.justina.management.repository.PatientRepository;
-import io.justina.management.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,19 +23,22 @@ import java.util.Optional;
 @Service
 public class PatientServiceImpl implements PatientService {
 
-    private final UserRepository userRepository;
+
 
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final PatientRepository patientRepository;
 
+    private final ModelMapperConfig modelMapperConfig;
+
     @Autowired
-    public PatientServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, PatientRepository patientRepository) {
-        this.userRepository = userRepository;
+    public PatientServiceImpl(PasswordEncoder passwordEncoder,
+                              PatientRepository patientRepository, ModelMapperConfig modelMapperConfig) {
+
         this.passwordEncoder = (BCryptPasswordEncoder) passwordEncoder;
         this.patientRepository = patientRepository;
+        this.modelMapperConfig = modelMapperConfig;
     }
-    ModelMapper modelMapper = new ModelMapper();
     /**
      * Obtiene todos los pacientes registrados en el sistema.
      *
@@ -46,16 +46,9 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public List<PatientResponseDTO> getAllPatients() {
-        modelMapper.typeMap(Patient.class, PatientResponseDTO.class)
-                .addMappings(mapper -> {
-                    mapper.map(src -> src.getUser().getId(), PatientResponseDTO::setId);
-                    mapper.map(src -> src.getUser().getFirstName(), PatientResponseDTO::setFirstName);
-                    mapper.map(src -> src.getUser().getLastName(), PatientResponseDTO::setLastName);
-                    mapper.map(src -> src.getUser().getEmail(), PatientResponseDTO::setEmail);
-                    mapper.map(src -> src.getUser().getActive(), PatientResponseDTO::setActive);
-                });
-        return patientRepository.findAll().stream()
-                .map(patient -> modelMapper.map(patient, PatientResponseDTO.class))
+        List<Patient> patients = patientRepository.findAll();
+        return patients.stream()
+                .map(patient -> modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class))
                 .toList();
     }
     /**
@@ -65,25 +58,27 @@ public class PatientServiceImpl implements PatientService {
         * @return Objeto Patient correspondiente al paciente encontrado.
         * @throws EntityNotFoundException Si no se encuentra un paciente con el ID especificado.
         */
+//    @Override
+//    public PatientResponseDTO getPatientById(Long patientId) {
+//        Patient patient = patientRepository.findByPatient_Id(patientId);
+//
+//        PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
+//        responseDTO.setId(patient.getUser().getId());
+//        responseDTO.setFirstName(patient.getUser().getFirstName());
+//        responseDTO.setLastName(patient.getUser().getLastName());
+//        responseDTO.setEmail(patient.getUser().getEmail());
+//        responseDTO.setIdentificationNumber(patient.getIdentificationNumber());
+//        responseDTO.setBirthDate(patient.getBirthDate());
+//        responseDTO.setBloodType(patient.getBloodType());
+//        responseDTO.setBloodFactor(patient.getBloodFactor());
+//
+//        return responseDTO;
+//    }
+
     @Override
     public PatientResponseDTO getPatientById(Long patientId) {
-        Optional<Patient> patientOptional = Optional.ofNullable(patientRepository.findByUser_Id(patientId));
-        if(patientOptional.isPresent()){
-            Patient patient = patientOptional.get();
-            PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
-            responseDTO.setId(patient.getUser().getId());
-            responseDTO.setFirstName(patient.getUser().getFirstName());
-            responseDTO.setLastName(patient.getUser().getLastName());
-            responseDTO.setEmail(patient.getUser().getEmail());
-            responseDTO.setIdentificationNumber(patient.getIdentificationNumber());
-            responseDTO.setBirthDate(patient.getBirthDate());
-            responseDTO.setBloodType(patient.getBloodType());
-            responseDTO.setBloodFactor(patient.getBloodFactor());
-            return responseDTO;
-        } else {
-            throw new IllegalArgumentException("Patient not found with id: " + patientId);
-
-        }
+        Optional<Patient> patient = patientRepository.findById(patientId);
+        return modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class);
     }
     /**
      * Crea un nuevo paciente en el sistema.
@@ -94,35 +89,12 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO) {
-        User existingUser = userRepository.findByEmail(patientRequestDTO.getEmail());
-        if (existingUser != null) {
-            throw new RuntimeException("User already exists with email: " + patientRequestDTO.getEmail());
-        }
-        User user = modelMapper.map(patientRequestDTO, User.class);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoleEnum(RoleEnum.ROLE_PATIENT);
-        user.setActive(true);
-        userRepository.save(user);
-
-        Patient existingPatient = patientRepository.findByUser(user);
-        if (existingPatient != null) {
-            throw new RuntimeException("Patient already exists for user with email: " + patientRequestDTO.getEmail());
-        }
-        Patient patient = modelMapper.map(patientRequestDTO, Patient.class);
-        patient.setUser(user);
-        patient.setBirthDate(LocalDate.parse(patientRequestDTO.getBirthDate()));
-        patientRepository.save(patient);
-
-        user.setPatient(patient);
-        userRepository.save(user);
-
-        PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
-        responseDTO.setId(patient.getUser().getId());
-        responseDTO.setFirstName(user.getFirstName());
-        responseDTO.setLastName(user.getLastName());
-        responseDTO.setEmail(user.getEmail());
-
-        return responseDTO;
+        Patient patient = modelMapperConfig.modelMapperPatient().map(patientRequestDTO, Patient.class);
+        patient.setPassword(passwordEncoder.encode(patientRequestDTO.getPassword()));
+        patient.setActive(true);
+        patient.setRoleEnum(RoleEnum.ROLE_PATIENT);
+        patient = patientRepository.save(patient);
+        return modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class);
     }
 
 

@@ -66,26 +66,22 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (subject != null) {
                 if(tokenService.hasRol(token, "ROLE_ADMIN")){
                     User user = userRepository.findByEmail(subject);
-                    System.out.println("This is user: " + user);
-                    if (user != null) {
-                        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                    System.out.println("This is user: " + user.getUsername());
+                    Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    //authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else if(tokenService.hasRol(token, "ROLE_DOCTOR")){
-                    MedicalStaff medicalStaff = medicalStaffRepository.findByUser_Email(subject);
-                    System.out.println("This is doctor: " + medicalStaff);
-                    if (medicalStaff != null) {
-                        Collection<? extends GrantedAuthority> authorities = medicalStaff.getUser().getAuthorities();
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(medicalStaff, null, authorities);
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                    MedicalStaff medicalStaff = medicalStaffRepository.findByEmail(subject);
+                    System.out.println("This is medicalStaff: " + medicalStaff.getUsername());
+                    Collection<? extends GrantedAuthority> authorities = medicalStaff.getAuthorities();
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(medicalStaff, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else if (tokenService.hasRol(token, "ROLE_PATIENT")){
-                    Patient patient = patientRepository.findByUser_Email(subject);
-                    System.out.println("This is patient: " + patient.getUser().getEmail());
-                    Collection<? extends GrantedAuthority> authorities = patient.getUser().getAuthorities();
+                    Patient patient = patientRepository.findByEmail(subject);
+                    System.out.println("This is patient: " + patient.getUsername());
+                    Collection<? extends GrantedAuthority> authorities = patient.getAuthorities();
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(patient, null, authorities);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);

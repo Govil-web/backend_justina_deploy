@@ -16,6 +16,7 @@ io\justina\management\dto\user\UserResponseDataDTO.class
 io\justina\management\dto\appointment\AppointmentDataRegisterDTO.class
 io\justina\management\dto\user\UserRegisterDataDTO.class
 io\justina\management\dto\financier\FinancierRegisterDTO.class
+io\justina\management\utils\interfaces\Identifiable.class
 io\justina\management\dto\error\ErrorDTO.class
 io\justina\management\enums\RoleEnum.class
 io\justina\management\dto\medicalstaff\MedicalStaffRegisterDTO.class

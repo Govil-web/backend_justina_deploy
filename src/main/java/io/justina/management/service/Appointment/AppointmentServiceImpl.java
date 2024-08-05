@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 /**
  * Implementación del servicio para gestionar citas médicas en el sistema.
@@ -54,34 +56,34 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     @Override
     public AppointmentResponseDTO registerAppointment(AppointmentDataRegisterDTO appointmentData) {
+        // Retrieve Patient entity
+        Patient patient = patientRepository.findById(appointmentData.getIdPatient())
+                .orElseThrow(() -> new BadRequestException("Patient not found"));
 
-        if (patientRepository.findByUser_Id(appointmentData.getIdPatient()) == null) {
-            throw new BadRequestException("El id del paciente no fue encontrado");
-        }
-        if (medicalStaffRepository.findByUser_Id(appointmentData.getIdMedicalStaff()) == null) {
-            throw new BadRequestException("El id del profesional no fue encontrado");
-        }
+        // Retrieve MedicalStaff entity
+        MedicalStaff medicalStaff = medicalStaffRepository.findById(appointmentData.getIdMedicalStaff())
+                .orElseThrow(() -> new BadRequestException("Medical staff not found"));
 
-        Patient patient = patientRepository.findByUser_Id(appointmentData.getIdPatient());
-        MedicalStaff medicalStaff = medicalStaffRepository.findByUser_Id(appointmentData.getIdMedicalStaff());
-
+        // Map AppointmentDataRegisterDTO to Appointment entity
         Appointment appointment = modelMapper.map(appointmentData, Appointment.class);
         appointment.setPatient(patient);
         appointment.setMedicalStaff(medicalStaff);
         appointment.setActive(true);
+
+        // Save Appointment entity
         appointment = appointmentRepository.save(appointment);
 
+        // Map the saved Appointment entity to AppointmentResponseDTO
         AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);
-        responseDTO.setIdPatient(patient.getUser().getId());
-        responseDTO.setFullNamePatient(patient.getUser().getFirstName()+ " " + patient.getUser().getLastName());
-        responseDTO.setIdMedicalStaff(medicalStaff.getUser().getId());
-        responseDTO.setFullNameMedicalStaff(medicalStaff.getUser().getFirstName() + " " + medicalStaff.getUser().getLastName());
+        responseDTO.setIdPatient(patient.getId());
+        responseDTO.setFullNamePatient(patient.getFirstName() + " " + patient.getLastName());
+        responseDTO.setIdMedicalStaff(medicalStaff.getId());
+        responseDTO.setFullNameMedicalStaff(medicalStaff.getFirstName() + " " + medicalStaff.getLastName());
         responseDTO.setSpecialty(medicalStaff.getSpecialities().toString());
         responseDTO.setHealthCenter(appointmentData.getHealthCenter());
 
         return responseDTO;
     }
-
     /**
      * Obtiene todas las citas médicas registradas en el sistema.
      *
@@ -100,8 +102,7 @@ public class AppointmentServiceImpl implements AppointmentService {
      */
     @Override
     public List<AppointmentResponseDTO> getAppointmentsByPatient(Long idPatient) {
-        //List<Appointment> appointments = appointmentRepository.findByPatient_Id(idPatient);
-        List<Appointment> appointments = appointmentRepository.findByUser_Id(idPatient);
+        List<Appointment> appointments = appointmentRepository.findAllById(Collections.singleton(idPatient));
         return getAppointmentResponseDTOS(appointments);
     }
     /**
@@ -112,7 +113,7 @@ public class AppointmentServiceImpl implements AppointmentService {
      */
     @Override
     public List<AppointmentResponseDTO> getAppointmentsByMedicalStaff(Long idDoctor) {
-        List<Appointment> appointments = appointmentRepository.findByUser_Id(idDoctor);
+        List<Appointment> appointments = appointmentRepository.findAllById(Collections.singleton(idDoctor));
         return getAppointmentResponseDTOS(appointments);
     }
 
@@ -124,10 +125,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             MedicalStaff medicalStaff = appointment.getMedicalStaff();
 
             AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);
-            responseDTO.setIdPatient(patient.getUser().getId());
-            responseDTO.setFullNamePatient(patient.getUser().getFirstName() + " " + patient.getUser().getLastName());
-            responseDTO.setIdMedicalStaff(medicalStaff.getUser().getId());
-            responseDTO.setFullNameMedicalStaff(medicalStaff.getUser().getFirstName() + " " + medicalStaff.getUser().getLastName());
+            responseDTO.setIdPatient(patient.getId());
+            responseDTO.setFullNamePatient(patient.getFirstName() + " " + patient.getLastName());
+            responseDTO.setIdMedicalStaff(medicalStaff.getId());
+            responseDTO.setFullNameMedicalStaff(medicalStaff.getFirstName() + " " + medicalStaff.getLastName());
             responseDTO.setSpecialty(medicalStaff.getSpecialities().toString());
             responseDTO.setHealthCenter(appointment.getHealthCenter());
 

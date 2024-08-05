@@ -7,6 +7,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import io.justina.management.exception.BadRequestException;
+import io.justina.management.model.MedicalStaff;
+import io.justina.management.model.Patient;
 import io.justina.management.model.User;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,30 +36,108 @@ public class TokenService implements ITokenService {
     /**
      * Genera un token JWT para el usuario proporcionado.
      *
-     * @param user El usuario para el cual se genera el token
+     * @param entity El usuario para el cual se genera el token
      * @return El token JWT generado
      * @throws IllegalArgumentException Si el usuario es nulo
      * @throws RuntimeException Si ocurre un error al crear el token
      */
-    public String generateToken(User user){
-        if(user == null){
-            throw new IllegalArgumentException("User cannot be null");
-        }
-        try{
+    public String generateToken(Object entity) {
+        try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             JWTCreator.Builder jwtBuilder = JWT.create().withIssuer("justina.io");
-            return jwtBuilder
-                    .withSubject(user.getEmail())
-                    .withClaim("id", user.getId())
-                    .withClaim("role", user.getRoleEnum().name())
-                    .withClaim("authorities", getRoles(user))
-                    .withExpiresAt(generateExpirationDate())
-                    .sign(algorithm);
-
-        }catch (JWTCreationException exception){
-            throw new RuntimeException("Failed to create token.");
+            String token;
+            switch (entity) {
+                case User user -> {
+                    System.out.println("Generating token for User");
+                    token = jwtBuilder
+                            .withSubject(user.getEmail())
+                            .withClaim("id", user.getPrimaryKey())
+                            .withClaim("role", user.getRoleEnum().name())
+                            .withClaim("authorities", getRoles(user))
+                            .withExpiresAt(generateExpirationDate())
+                            .sign(algorithm);
+                }
+                case Patient patient -> {
+                    System.out.println("Generating token for Patient");
+                    token = jwtBuilder
+                            .withSubject(patient.getEmail())
+                            .withClaim("id", patient.getPrimaryKey())
+                            .withClaim("role", patient.getRoleEnum().name())
+                            .withClaim("authorities", getRoles(patient))
+                            .withExpiresAt(generateExpirationDate())
+                            .sign(algorithm);
+                }
+                case MedicalStaff medicalStaff -> {
+                    System.out.println("Generating token for MedicalStaff");
+                    token = jwtBuilder
+                            .withSubject(medicalStaff.getEmail())
+                            .withClaim("id", medicalStaff.getPrimaryKey())
+                            .withClaim("role", medicalStaff.getRoleEnum().name())
+                            .withClaim("authorities", getRoles(medicalStaff))
+                            .withExpiresAt(generateExpirationDate())
+                            .sign(algorithm);
+                }
+                case null, default -> throw new IllegalArgumentException("Entity type not supported to generate token.");
+            }
+            return token;
+        } catch (JWTCreationException exception) {
+            throw new BadRequestException("Fallo la creación del token.");
         }
     }
+//    public String generateToken(Object entity){
+//        try{
+//            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+//            JWTCreator.Builder jwtBuilder = JWT.create().withIssuer("justina.io");
+//            String token;
+//            return switch (entity) {
+//                case User user -> {
+//                    token = jwtBuilder
+//                        .withSubject(user.getEmail())
+//                        .withClaim("id", user.getId())
+//                        .withClaim("role", user.getRoleEnum().name())
+//                        .withClaim("authorities", getRoles(user))
+//                        .withExpiresAt(generateExpirationDate())
+//                        .sign(algorithm);}
+//                case Patient patient -> jwtBuilder
+//                        .withSubject(patient.getEmail())
+//                        .withClaim("id", patient.getId())
+//                        .withClaim("role", patient.getRoleEnum().name())
+//                        .withClaim("authorities", getRoles(patient))
+//                        .withExpiresAt(generateExpirationDate())
+//                        .sign(algorithm);
+//                case MedicalStaff medicalStaff -> jwtBuilder
+//                        .withSubject(medicalStaff.getEmail())
+//                        .withClaim("id", medicalStaff.getId())
+//                        .withClaim("role", medicalStaff.getRoleEnum().name())
+//                        .withClaim("authorities", getRoles(medicalStaff))
+//                        .withExpiresAt(generateExpirationDate())
+//                        .sign(algorithm);
+//                case null, default ->
+//                        throw new IllegalArgumentException("Entity type not supported to generate token.");
+//            };
+//        }catch (JWTCreationException exception){
+//            throw new RuntimeException("Failed to create token.");
+//        }
+//    }
+//    public String generateToken(User user){
+//        if(user == null){
+//            throw new IllegalArgumentException("User cannot be null");
+//        }
+//        try{
+//            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+//            JWTCreator.Builder jwtBuilder = JWT.create().withIssuer("justina.io");
+//            return jwtBuilder
+//                    .withSubject(user.getEmail())
+//                    .withClaim("id", user.getId())
+//                    .withClaim("role", user.getRoleEnum().name())
+//                    .withClaim("authorities", getRoles(user))
+//                    .withExpiresAt(generateExpirationDate())
+//                    .sign(algorithm);
+//
+//        }catch (JWTCreationException exception){
+//            throw new RuntimeException("Failed to create token.");
+//        }
+//    }
 
     /**
      * Obtiene el sujeto (subject) del token JWT proporcionado.
@@ -90,13 +171,22 @@ public class TokenService implements ITokenService {
     /**
      * Obtiene los roles del usuario a partir de las authorities.
      *
-     * @param user El usuario del cual se obtienen los roles
+     * @param entity El usuario del cual se obtienen los roles
      * @return Lista de roles del usuario
      */
-    private List<String> getRoles(User user){
-        return user.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+    private List<String> getRoles(Object entity){
+        return switch (entity) {
+            case User user -> user.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            case Patient patient -> patient.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            case MedicalStaff medicalStaff -> medicalStaff.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+            case null, default -> throw new BadRequestException("User type not supported to get roles.");
+        };
     }
 
     /**

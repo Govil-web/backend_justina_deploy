@@ -2,11 +2,13 @@ package io.justina.management.service.authentication;
 
 import io.justina.management.dto.jwttoken.DataJWTTokenDTO;
 import io.justina.management.dto.user.UserAuthenticateDataDTO;
+import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.MedicalStaff;
 import io.justina.management.model.Patient;
 import io.justina.management.model.User;
+import io.justina.management.repository.MedicalStaffRepository;
+import io.justina.management.repository.PatientRepository;
 import io.justina.management.repository.UserRepository;
-import io.justina.management.service.token.ITokenService;
 import io.justina.management.service.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -29,8 +31,9 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService implements UserDetailsService, IAuthenticationService {
 
     private final UserRepository userRepository;
-
-    private final ITokenService tokenService;
+    private final MedicalStaffRepository medicalStaffRepository;
+    private final PatientRepository patientRepository;
+    private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
     /**
@@ -41,10 +44,14 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      * @param authenticationManager Administrador de autenticación para autenticar usuarios.
      */
     @Autowired
-    public AuthenticationService(UserRepository userRepository, ITokenService tokenService, @Lazy AuthenticationManager authenticationManager) {
+    public AuthenticationService(UserRepository userRepository, TokenService tokenService, @Lazy AuthenticationManager authenticationManager,
+                                 MedicalStaffRepository medicalStaffRepository, PatientRepository patientRepository) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
+        this.medicalStaffRepository = medicalStaffRepository;
+        this.patientRepository = patientRepository;
+
     }
 
     /**
@@ -57,6 +64,12 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = userRepository.findByEmail(username);
+        if (userDetails == null){
+            userDetails = patientRepository.findByEmail(username);
+        }
+        if(userDetails == null){
+            userDetails = medicalStaffRepository.findByEmail(username);
+        }
         if(userDetails == null){
             throw new UsernameNotFoundException("User not found");
         }
@@ -71,10 +84,27 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
     @Override
     public DataJWTTokenDTO authenticate(UserAuthenticateDataDTO userAuthenticateDataDTO){
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(userAuthenticateDataDTO.getEmail(), userAuthenticateDataDTO.getPassword());
-        var entityAuth = authenticationManager.authenticate(authenticationToken).getPrincipal();
-        var jwtToken = tokenService.generateToken((User) entityAuth);
-            return new DataJWTTokenDTO(jwtToken);
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        var entityAuth = authentication.getPrincipal();
+        String jwtToken;
+        if (entityAuth instanceof User) {
+            jwtToken = tokenService.generateToken(entityAuth);
+        } else if (entityAuth instanceof MedicalStaff) {
+           jwtToken = tokenService.generateToken(entityAuth);
+        } else if (entityAuth instanceof Patient) {
+            jwtToken = tokenService.generateToken(entityAuth);
+        } else {
+            throw new BadRequestException("Entidad no encontrada");
+        }
+        return new DataJWTTokenDTO(jwtToken);
     }
+//    @Override
+//    public DataJWTTokenDTO authenticate(UserAuthenticateDataDTO userAuthenticateDataDTO){
+//        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(userAuthenticateDataDTO.getEmail(), userAuthenticateDataDTO.getPassword());
+//        var entityAuth = authenticationManager.authenticate(authenticationToken).getPrincipal();
+//        var jwtToken = tokenService.generateToken(entityAuth);
+//            return new DataJWTTokenDTO(jwtToken);
+//    }
 
     /**
      * Verifica si el usuario autenticado tiene el rol de administrador.
@@ -121,29 +151,16 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      */
     @Override
     public Long getAuthenticatedUserId() {
-        Long userId;
+        Long id;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getPrincipal() instanceof MedicalStaff medicalStaff) {
-            userId = medicalStaff.getUser().getId();
+            id = medicalStaff.getId();
         } else if (authentication.getPrincipal() instanceof Patient patient) {
-            userId = patient.getUser().getId();
+            id = patient.getId();
         }else{
             throw new IllegalStateException("Could not get authenticated user ID");
         }
-        return userId;
+        return id;
     }
-
-//    @Override
-//    public Long getAuthenticatedUserId() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication == null || !(authentication.getPrincipal() instanceof MedicalStaff medicalStaff)) {
-//            throw new IllegalStateException("Could not get authenticated user ID");
-//        }
-//        Long userId = medicalStaff.getUser().getId();
-//        if (userId == null) {
-//            throw new IllegalStateException("Could not get authenticated user ID");
-//        }
-//        return userId;
-//    }
 
 }

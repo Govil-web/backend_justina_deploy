@@ -48,14 +48,14 @@ public class Appointment {
     /**
      * Paciente asignado al turno.
      */
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "patient_id",  nullable = false)
     private Patient patient;
     /**
      * Personal médico asignado al turno.
      */
-    @ManyToOne//(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professional_id")
+    @ManyToOne
+    @JoinColumn(name = "professional_id", nullable = false)
     private MedicalStaff medicalStaff;
     /**
      * Estado del turno.
@@ -68,26 +68,4 @@ public class Appointment {
     @Column(name = "descripción")
     private String description;
 
-
-
-
-
-    /*
-    * AGREGAR DESCRIPCION PARA EL TURNO
-    *private AppointmentType appointmentType;
-    private Integer durationMinutes;
-    private String notes;
-    private String reason;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime cancelledAt;
-    private String cancellationReason;
-    private boolean reminderSent;
-    private boolean confirmed;
-    private String location;
-    private String virtualMeetingLink;
-    private String insuranceDetails;
-    private boolean followUpRequired;
-    private boolean completed;
-    * */
 }
