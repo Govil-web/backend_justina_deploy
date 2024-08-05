@@ -4,11 +4,13 @@ package io.justina.management.controller.appointment;
 import io.justina.management.dto.appointment.AppointmentDataRegisterDTO;
 import io.justina.management.dto.appointment.AppointmentResponseDTO;
 import io.justina.management.service.Appointment.AppointmentService;
+import io.justina.management.service.authentication.IAuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,14 +29,16 @@ public class AppointmentController {
      * Servicio de citas médicas.
      */
     private final AppointmentService appointmentService;
+    private final IAuthenticationService authenticationService;
     /**
      * Constructor que inicializa el controlador con el servicio de citas médicas.
      *
      * @param appointmentService Servicio de citas médicas.
      */
     @Autowired
-    public AppointmentController(AppointmentService appointmentService) {
+    public AppointmentController(AppointmentService appointmentService, IAuthenticationService authenticationService) {
         this.appointmentService = appointmentService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -56,7 +60,12 @@ public class AppointmentController {
     @Operation(summary = "Get all appointments by patient")
     @GetMapping("/getByPatient/{idPatient}")
     public ResponseEntity<List<AppointmentResponseDTO>> getByPatient(@PathVariable Long idPatient) {
-        return new ResponseEntity<>(appointmentService.getAppointmentsByPatient(idPatient), HttpStatus.OK);
+        try{
+            authenticationService.verifyUserAccess(idPatient);
+            return new ResponseEntity<>(appointmentService.getAppointmentsByPatient(idPatient), HttpStatus.OK);
+        }catch (AccessDeniedException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
     /**
      * Maneja la solicitud GET para obtener todas las citas médicas de un médico.
@@ -67,7 +76,12 @@ public class AppointmentController {
     @Operation(summary = "Get all appointments by medical staff")
     @GetMapping("/getByMedicalStaff/{idDoctor}")
     public ResponseEntity<List<AppointmentResponseDTO>> getByMedicalStaff(@PathVariable Long idDoctor) {
-        return new ResponseEntity<>(appointmentService.getAppointmentsByMedicalStaff(idDoctor), HttpStatus.OK);
+        try{
+            authenticationService.verifyUserAccess(idDoctor);
+            return new ResponseEntity<>(appointmentService.getAppointmentsByMedicalStaff(idDoctor), HttpStatus.OK);
+        }catch (AccessDeniedException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
     /**
      * Maneja la solicitud POST para registrar una nueva cita médica.

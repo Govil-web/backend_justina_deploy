@@ -62,7 +62,7 @@ public class MedicalStaffService implements IMedicalStaffService{
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoleEnum(RoleEnum.ROLE_DOCTOR);
         user.setActive(true);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         MedicalStaff existingMedicalStaff = medicalStaffRepository.findByUser(user);
         if (existingMedicalStaff != null) {
@@ -71,12 +71,15 @@ public class MedicalStaffService implements IMedicalStaffService{
 
         MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
         medicalStaff.setUser(user);
-        medicalStaffRepository.save(medicalStaff);
+        medicalStaff.setId(medicalStaff.getUser().getId());
+
+        medicalStaff = medicalStaffRepository.save(medicalStaff);
 
         user.setMedicalStaff(medicalStaff);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         MedicalStaffResponseDTO responseDTO = modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);
+        responseDTO.setId(user.getId());
         responseDTO.setFirstName(user.getFirstName());
         responseDTO.setLastName(user.getLastName());
         responseDTO.setEmail(user.getEmail());
@@ -135,6 +138,7 @@ public class MedicalStaffService implements IMedicalStaffService{
     @Transactional
     @Override
     public void deactivateMedicalStaff(Long id) {
+
         MedicalStaff medicalStaff = medicalStaffRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medical Staff not found with id: " + id));
 

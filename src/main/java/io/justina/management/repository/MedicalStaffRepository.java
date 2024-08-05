@@ -38,6 +38,6 @@ public interface MedicalStaffRepository extends JpaRepository<MedicalStaff, Long
      */
     MedicalStaff findByUser(User user);
 
-
+    MedicalStaff findByUser_Id (Long id);
 }
 

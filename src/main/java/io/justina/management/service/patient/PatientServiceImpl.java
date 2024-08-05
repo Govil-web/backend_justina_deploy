@@ -48,6 +48,7 @@ public class PatientServiceImpl implements PatientService {
     public List<PatientResponseDTO> getAllPatients() {
         modelMapper.typeMap(Patient.class, PatientResponseDTO.class)
                 .addMappings(mapper -> {
+                    mapper.map(src -> src.getUser().getId(), PatientResponseDTO::setId);
                     mapper.map(src -> src.getUser().getFirstName(), PatientResponseDTO::setFirstName);
                     mapper.map(src -> src.getUser().getLastName(), PatientResponseDTO::setLastName);
                     mapper.map(src -> src.getUser().getEmail(), PatientResponseDTO::setEmail);
@@ -66,10 +67,11 @@ public class PatientServiceImpl implements PatientService {
         */
     @Override
     public PatientResponseDTO getPatientById(Long patientId) {
-        Optional<Patient> patientOptional = patientRepository.findById(patientId);
+        Optional<Patient> patientOptional = Optional.ofNullable(patientRepository.findByUser_Id(patientId));
         if(patientOptional.isPresent()){
             Patient patient = patientOptional.get();
             PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
+            responseDTO.setId(patient.getUser().getId());
             responseDTO.setFirstName(patient.getUser().getFirstName());
             responseDTO.setLastName(patient.getUser().getLastName());
             responseDTO.setEmail(patient.getUser().getEmail());
@@ -115,6 +117,7 @@ public class PatientServiceImpl implements PatientService {
         userRepository.save(user);
 
         PatientResponseDTO responseDTO = modelMapper.map(patient, PatientResponseDTO.class);
+        responseDTO.setId(patient.getUser().getId());
         responseDTO.setFirstName(user.getFirstName());
         responseDTO.setLastName(user.getLastName());
         responseDTO.setEmail(user.getEmail());

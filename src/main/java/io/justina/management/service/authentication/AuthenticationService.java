@@ -3,8 +3,10 @@ package io.justina.management.service.authentication;
 import io.justina.management.dto.jwttoken.DataJWTTokenDTO;
 import io.justina.management.dto.user.UserAuthenticateDataDTO;
 import io.justina.management.model.MedicalStaff;
+import io.justina.management.model.Patient;
 import io.justina.management.model.User;
 import io.justina.management.repository.UserRepository;
+import io.justina.management.service.token.ITokenService;
 import io.justina.management.service.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -28,7 +30,7 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
 
     private final UserRepository userRepository;
 
-    private final TokenService tokenService;
+    private final ITokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
     /**
@@ -39,7 +41,7 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      * @param authenticationManager Administrador de autenticación para autenticar usuarios.
      */
     @Autowired
-    public AuthenticationService(UserRepository userRepository, TokenService tokenService, @Lazy AuthenticationManager authenticationManager) {
+    public AuthenticationService(UserRepository userRepository, ITokenService tokenService, @Lazy AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
@@ -61,7 +63,7 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
         return userDetails;
     }
     /**
-     * Autentica a un usuario con las credenciales proporcionadas y genera un token JWT.
+     * Autentíca a un usuario con las credenciales proporcionadas y genera un token JWT.
      *
      * @param userAuthenticateDataDTO Datos de autenticación del usuario (correo electrónico y contraseña).
      * @return DTO que contiene el token JWT generado.
@@ -111,7 +113,6 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
             throw new AccessDeniedException("You do not have permissions to access this resource.");
         }
     }
-
     /**
      * Obtiene el ID del usuario autenticado.
      *
@@ -120,15 +121,29 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      */
     @Override
     public Long getAuthenticatedUserId() {
+        Long userId;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof MedicalStaff medicalStaff)) {
-            throw new IllegalStateException("Could not get authenticated user ID");
-        }
-        Long userId = medicalStaff.getUser().getId();
-        if (userId == null) {
+        if (authentication.getPrincipal() instanceof MedicalStaff medicalStaff) {
+            userId = medicalStaff.getUser().getId();
+        } else if (authentication.getPrincipal() instanceof Patient patient) {
+            userId = patient.getUser().getId();
+        }else{
             throw new IllegalStateException("Could not get authenticated user ID");
         }
         return userId;
     }
+
+//    @Override
+//    public Long getAuthenticatedUserId() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null || !(authentication.getPrincipal() instanceof MedicalStaff medicalStaff)) {
+//            throw new IllegalStateException("Could not get authenticated user ID");
+//        }
+//        Long userId = medicalStaff.getUser().getId();
+//        if (userId == null) {
+//            throw new IllegalStateException("Could not get authenticated user ID");
+//        }
+//        return userId;
+//    }
 
 }

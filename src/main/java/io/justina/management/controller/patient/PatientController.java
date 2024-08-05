@@ -3,6 +3,7 @@ package io.justina.management.controller.patient;
 import io.justina.management.dto.patient.PatientRequestDTO;
 import io.justina.management.dto.patient.PatientResponseDTO;
 import io.justina.management.service.authentication.AuthenticationService;
+import io.justina.management.service.authentication.IAuthenticationService;
 import io.justina.management.service.patient.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -25,10 +26,10 @@ import java.util.List;
 public class PatientController {
 
     private final PatientService patientService;
-    private final AuthenticationService authenticationService;
+    private final IAuthenticationService authenticationService;
 
     @Autowired
-    public PatientController(PatientService patientService, AuthenticationService authenticationService) {
+    public PatientController(PatientService patientService, IAuthenticationService authenticationService) {
             this.patientService = patientService;
             this.authenticationService = authenticationService;
         }

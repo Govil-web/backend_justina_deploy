@@ -54,24 +54,27 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     @Override
     public AppointmentResponseDTO registerAppointment(AppointmentDataRegisterDTO appointmentData) {
-        if (!patientRepository.existsById(appointmentData.getIdPatient())) {
+
+        if (patientRepository.findByUser_Id(appointmentData.getIdPatient()) == null) {
             throw new BadRequestException("El id del paciente no fue encontrado");
         }
-        if (!medicalStaffRepository.existsById(appointmentData.getIdMedicalStaff())) {
+        if (medicalStaffRepository.findByUser_Id(appointmentData.getIdMedicalStaff()) == null) {
             throw new BadRequestException("El id del profesional no fue encontrado");
         }
 
-        Patient patient = patientRepository.findById(appointmentData.getIdPatient()).orElseThrow(() -> new BadRequestException("El id del paciente no fue encontrado"));
-        MedicalStaff medicalStaff = medicalStaffRepository.findById(appointmentData.getIdMedicalStaff()).orElseThrow(() -> new BadRequestException("El id del profesional no fue encontrado"));
+        Patient patient = patientRepository.findByUser_Id(appointmentData.getIdPatient());
+        MedicalStaff medicalStaff = medicalStaffRepository.findByUser_Id(appointmentData.getIdMedicalStaff());
 
         Appointment appointment = modelMapper.map(appointmentData, Appointment.class);
+        appointment.setPatient(patient);
+        appointment.setMedicalStaff(medicalStaff);
         appointment.setActive(true);
         appointment = appointmentRepository.save(appointment);
 
         AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);
-        responseDTO.setIdPatient(patient.getId());
+        responseDTO.setIdPatient(patient.getUser().getId());
         responseDTO.setFullNamePatient(patient.getUser().getFirstName()+ " " + patient.getUser().getLastName());
-        responseDTO.setIdMedicalStaff(medicalStaff.getId());
+        responseDTO.setIdMedicalStaff(medicalStaff.getUser().getId());
         responseDTO.setFullNameMedicalStaff(medicalStaff.getUser().getFirstName() + " " + medicalStaff.getUser().getLastName());
         responseDTO.setSpecialty(medicalStaff.getSpecialities().toString());
         responseDTO.setHealthCenter(appointmentData.getHealthCenter());
@@ -97,7 +100,8 @@ public class AppointmentServiceImpl implements AppointmentService {
      */
     @Override
     public List<AppointmentResponseDTO> getAppointmentsByPatient(Long idPatient) {
-        List<Appointment> appointments = appointmentRepository.findByPatient_Id(idPatient);
+        //List<Appointment> appointments = appointmentRepository.findByPatient_Id(idPatient);
+        List<Appointment> appointments = appointmentRepository.findByUser_Id(idPatient);
         return getAppointmentResponseDTOS(appointments);
     }
     /**
@@ -108,7 +112,7 @@ public class AppointmentServiceImpl implements AppointmentService {
      */
     @Override
     public List<AppointmentResponseDTO> getAppointmentsByMedicalStaff(Long idDoctor) {
-        List<Appointment> appointments = appointmentRepository.findByMedicalStaff_Id(idDoctor);
+        List<Appointment> appointments = appointmentRepository.findByUser_Id(idDoctor);
         return getAppointmentResponseDTOS(appointments);
     }
 
@@ -120,9 +124,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             MedicalStaff medicalStaff = appointment.getMedicalStaff();
 
             AppointmentResponseDTO responseDTO = modelMapper.map(appointment, AppointmentResponseDTO.class);
-            responseDTO.setIdPatient(patient.getId());
+            responseDTO.setIdPatient(patient.getUser().getId());
             responseDTO.setFullNamePatient(patient.getUser().getFirstName() + " " + patient.getUser().getLastName());
-            responseDTO.setIdMedicalStaff(medicalStaff.getId());
+            responseDTO.setIdMedicalStaff(medicalStaff.getUser().getId());
             responseDTO.setFullNameMedicalStaff(medicalStaff.getUser().getFirstName() + " " + medicalStaff.getUser().getLastName());
             responseDTO.setSpecialty(medicalStaff.getSpecialities().toString());
             responseDTO.setHealthCenter(appointment.getHealthCenter());

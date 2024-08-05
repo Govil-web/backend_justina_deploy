@@ -48,28 +48,69 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
-                        .requestMatchers(HttpMethod.GET, "v1/api/user/getAll", "v1/api/user/**",
-                                "v1/api/medical-staff/getAll",
-                                "v1/api/medical-staff/getActive", "v1/api/financier/getAll,",
-                                "v1/api/financier/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getByPatient/**",
-                                "v1/api/patient/**").hasAnyRole("ADMIN","PATIENT")
-                        .requestMatchers(HttpMethod.GET, "v1/api/medical-staff/**").hasAnyRole("ADMIN", "DOCTOR")
-                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getAll",
-                                "v1/api/appointment/getByPatient/**",
-                                "v1/api/appointment/getByMedicalStaff/**").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "v1/api/appointment/register").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "v1/api/user/register","v1/api/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,  "v1/api/medical-staff/register",
-                                "v1/api/financier/").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "v1/api/medical-staff/delete/**").hasAnyRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "v1/api/appointment/delete/**").hasAnyRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "v1/api/user/register", "v1/api/login").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+
+                        // Rutas para ADMIN
+                        .requestMatchers(HttpMethod.GET,
+                                "v1/api/user/getAll", "v1/api/user/**",
+                                "v1/api/medical-staff/getAll", "v1/api/medical-staff/getActive",
+                                "v1/api/financier/getAll", "v1/api/financier/**",
+                                "v1/api/appointment/getAll", "v1/api/appointment/getByPatient/{id}",
+                                "v1/api/appointment/getByMedicalStaff/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,
+                                "v1/api/appointment/register",
+                                "v1/api/medical-staff/register",
+                                "v1/api/financier/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,
+                                "v1/api/medical-staff/delete/{id}",
+                                "v1/api/appointment/delete/{id}").hasRole("ADMIN")
+
+                        // Rutas para PATIENT
+                        .requestMatchers(HttpMethod.GET,
+                                "v1/api/appointment/getByPatient/{id}","v1/api/medical-staff/getActive",
+                                "v1/api/patient/{id}").hasAnyRole("ADMIN", "PATIENT")
+
+                        // Rutas para DOCTOR
+                        .requestMatchers(HttpMethod.GET, "v1/api/medical-staff/{id}").hasAnyRole("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getByMedicalStaff/{id}").hasAnyRole("ADMIN", "DOCTOR")
+
+                        // Cualquier otra solicitud requiere autenticación
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        return httpSecurity
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .cors(Customizer.withDefaults())
+//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(HttpMethod.GET, "/").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "v1/api/user/getAll", "v1/api/user/**",
+//                                "v1/api/medical-staff/getAll",
+//                                "v1/api/medical-staff/getActive", "v1/api/financier/getAll,",
+//                                "v1/api/financier/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getByPatient/**",
+//                                "v1/api/patient/**").hasAnyRole("ADMIN","PATIENT")
+//                        .requestMatchers(HttpMethod.GET, "v1/api/medical-staff/**").hasAnyRole("ADMIN", "DOCTOR")
+//                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getAll",
+//                                "v1/api/appointment/getByPatient/**",
+//                                "v1/api/appointment/getByMedicalStaff/**").hasAnyRole("ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "v1/api/appointment/register").hasAnyRole("ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "v1/api/user/register","v1/api/login").permitAll()
+//                        .requestMatchers(HttpMethod.POST,  "v1/api/medical-staff/register",
+//                                "v1/api/financier/").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.DELETE, "v1/api/medical-staff/delete/**").hasAnyRole("ADMIN")
+//                        .requestMatchers(HttpMethod.DELETE, "v1/api/appointment/delete/**").hasAnyRole("ADMIN")
+//                        .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+//                        .anyRequest().authenticated())
+//                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+//                .build();
+//    }
     /**
      * Configura el administrador de autenticación para la aplicación.
      *

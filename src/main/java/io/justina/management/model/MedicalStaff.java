@@ -1,6 +1,7 @@
 package io.justina.management.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.justina.management.enums.Specialty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
