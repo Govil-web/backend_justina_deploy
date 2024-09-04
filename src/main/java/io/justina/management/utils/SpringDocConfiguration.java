@@ -28,10 +28,10 @@ public class SpringDocConfiguration {
                                         .bearerFormat("JWT")))
                 .info(new io.swagger.v3.oas.models.info.Info()
                         .title("API Justina")
-                        .description("Justina app Rest API, containing doctor and patient CRUD capabilities.")
+                        .description("Justina app Rest API.")
                         .contact(new io.swagger.v3.oas.models.info.Contact()
                                 .name("Equip Backend")
-                                .email("backend@justina.io"))
+                                .email("govil.web@gmail.com"))
                         .license(new io.swagger.v3.oas.models.info.License()
                                 .name("Apache 2.0")
                                 .url("https://justina.io/api/licencia")));
