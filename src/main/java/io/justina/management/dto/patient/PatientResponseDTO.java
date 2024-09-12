@@ -2,12 +2,13 @@ package io.justina.management.dto.patient;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 /**
  * Clase DTO (Data Transfer Object) que representa la respuesta de información de un paciente.
  */
 @Data
-public class PatientResponseDTO {
+public class PatientResponseDTO implements Serializable {
 
     /**
      * Identificador único del paciente.
@@ -29,6 +30,10 @@ public class PatientResponseDTO {
      * Número de identificación del paciente.
      */
     private String identificationNumber;
+    /**
+     * Número de teléfono del paciente.
+     */
+    private String phone;
     /**
      * Fecha de nacimiento del paciente.
      */

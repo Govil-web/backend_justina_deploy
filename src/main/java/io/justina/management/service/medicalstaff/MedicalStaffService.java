@@ -51,7 +51,7 @@ public class MedicalStaffService implements IMedicalStaffService{
     public MedicalStaffResponseDTO registerMedicalStaff(MedicalStaffRegisterDTO medicalStaffRegisterDTO) {
         MedicalStaff medicalStaff = modelMapper.map(medicalStaffRegisterDTO, MedicalStaff.class);
         medicalStaff.setPassword(passwordEncoder.encode(medicalStaffRegisterDTO.getPassword()));
-        medicalStaff.setRoleEnum(RoleEnum.ROLE_DOCTOR);
+        medicalStaff.setRoleEnum(RoleEnum.valueOf("DOCTOR"));
         medicalStaff.setActive(true);
         medicalStaff = medicalStaffRepository.save(medicalStaff);
         return modelMapper.map(medicalStaff, MedicalStaffResponseDTO.class);

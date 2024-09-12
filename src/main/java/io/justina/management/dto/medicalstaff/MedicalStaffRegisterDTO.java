@@ -8,13 +8,16 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
 /**
  * Clase DTO (Data Transfer Object) que representa la información de registro de un personal médico.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicalStaffRegisterDTO {
+public class MedicalStaffRegisterDTO implements Serializable {
     /**
      * Nombre del personal médico.
      */
@@ -49,13 +52,11 @@ public class MedicalStaffRegisterDTO {
     /**
      * Especialidades médicas del personal.
      */
+    @NotBlank(message = "Las especialidades médicas son obligatorias")
     private String specialities;
     /**
      * Descripción del perfil del personal médico.
      */
     private String description;
-    /**
-     * Indicador de activación del personal médico.
-     */
-    private Boolean active;
+
 }

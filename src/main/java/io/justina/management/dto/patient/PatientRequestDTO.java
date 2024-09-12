@@ -5,8 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+
 @Data
-public class PatientRequestDTO {
+public class PatientRequestDTO implements Serializable {
 
     @NotBlank(message = "El nombre es obligatorio")
     private String firstName;
@@ -22,7 +25,7 @@ public class PatientRequestDTO {
     private String password;
     private String phone;
     private String address;
-    private String birthDate;
+    private LocalDate birthDate;
     private String bloodType;
     private String bloodFactor;
     private char sex;

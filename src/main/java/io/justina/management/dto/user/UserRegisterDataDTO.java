@@ -8,13 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Clase DTO (Data Transfer Object) que representa los datos de registro de un usuario.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterDataDTO {
+public class UserRegisterDataDTO implements Serializable {
 
     /**
      * Nombre del usuario.
@@ -43,8 +45,9 @@ public class UserRegisterDataDTO {
     private String password;
 
     /**
-     * Rol del usuario representado como un Enum.
+     * Numero de telefono del usuario.
      */
-    @NotNull(message = "El rol es obligatorio")
-    private String roleEnum;
+    @NotNull(message = "El número de teléfono es obligatorio")
+    private String phone;
+
 }

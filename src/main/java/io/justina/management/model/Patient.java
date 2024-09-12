@@ -1,21 +1,15 @@
 package io.justina.management.model;
 
 
-
-import io.justina.management.enums.RoleEnum;
-import io.justina.management.utils.interfaces.Identifiable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -31,52 +25,9 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "pacientes")
 @Entity
-public class Patient implements  Identifiable, UserDetails {
-
-    /**
-     * Identificador único del paciente.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_paciente")
-    private Long id;
-
-    /**
-     * Nombre del usuario.
-     */
-    @Column(name = "nombre")
-    private String firstName;
-
-    /**
-     * Apellido del usuario.
-     */
-    @Column(name = "apellido")
-    private String lastName;
-
-    /**
-     * Rol del usuario.
-     */
-    @Enumerated(EnumType.STRING)
-    private RoleEnum roleEnum;
-
-    /**
-     * Correo electrónico del usuario (también utilizado como nombre de usuario).
-     */
-    @Column(name = "email", unique = true)
-    private String email;
-
-    /**
-     * Contraseña del usuario.
-     */
-    @Column(name = "password")
-    private String password;
-
-    /**
-     * Estado de activo/inactivo del usuario.
-     */
-    @Column(name = "activo")
-    private Boolean active;
-
+@PrimaryKeyJoinColumn(name = "user_id")
+@DiscriminatorValue("PACIENTE")
+public class Patient extends User{
 
     /**
      * Número de documento del paciente.
@@ -114,47 +65,7 @@ public class Patient implements  Identifiable, UserDetails {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Appointment> appointments;
 
-    @Override
-    public Long getPrimaryKey() {
-        return this.id;
-    }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_PATIENT"));
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-    /**
-     * Método para obtener la contraseña del usuario.
-     */
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
     /*
      * Posibles relaciones adicionales que pueden estar presentes en el sistema:

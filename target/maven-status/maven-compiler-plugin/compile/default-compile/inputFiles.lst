@@ -9,6 +9,7 @@ C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justin
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\controller\medicalstaff\MedicalStaffController.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\controller\patient\PatientController.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\controller\user\UserController.java
+C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\apiresponse\ApiResponse.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\appointment\AppointmentDataRegisterDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\appointment\AppointmentResponseDTO.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\dto\error\ErrorDTO.java
@@ -52,6 +53,6 @@ C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justin
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\service\token\ITokenService.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\service\token\TokenService.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\service\user\IUserService.java
+C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\service\user\UserDetailsServiceImpl.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\service\user\UserService.java
-C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\utils\interfaces\Identifiable.java
 C:\NoCountry\DEPLOY\h1-10-java-react-backend-dev\backend\src\main\java\io\justina\management\utils\SpringDocConfiguration.java

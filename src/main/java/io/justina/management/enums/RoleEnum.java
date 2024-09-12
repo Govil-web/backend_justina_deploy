@@ -7,20 +7,19 @@ public enum RoleEnum {
     /**
      * Rol de administrador.
      */
-    ROLE_ADMIN,
-
+    ADMIN,
     /**
      * Rol de doctor.
      */
-    ROLE_DOCTOR,
+    DOCTOR,
 
     /**
      * Rol de paciente.
      */
-    ROLE_PATIENT,
+    PATIENT,
 
     /**
      * Rol de financiero.
      */
-    ROLE_FINANCIER
+    FINANCIER
 }

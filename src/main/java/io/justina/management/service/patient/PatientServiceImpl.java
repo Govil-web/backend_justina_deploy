@@ -5,6 +5,7 @@ import io.justina.management.config.mapper.ModelMapperConfig;
 import io.justina.management.dto.patient.PatientRequestDTO;
 import io.justina.management.dto.patient.PatientResponseDTO;
 import io.justina.management.enums.RoleEnum;
+import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.Patient;
 import io.justina.management.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,10 +47,15 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public List<PatientResponseDTO> getAllPatients() {
-        List<Patient> patients = patientRepository.findAll();
-        return patients.stream()
-                .map(patient -> modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class))
-                .toList();
+        try{
+            List<Patient> patients = patientRepository.findAll();
+            return patients.stream()
+                    .map(patient -> modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class))
+                    .toList();
+        }catch (BadRequestException e){
+            throw new BadRequestException("Error al obtener los pacientes o el usuario no tiene permisos: " + e.getMessage());
+        }
+
     }
     /**
         * Obtiene un paciente por su ID.
@@ -77,8 +83,16 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResponseDTO getPatientById(Long patientId) {
-        Optional<Patient> patient = patientRepository.findById(patientId);
-        return modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class);
+        try{
+            if(patientId == null){
+                throw new EntityNotFoundException("Patient not found with id: " + patientId);
+            }
+            Optional<Patient> patient = patientRepository.findById(patientId);
+            return modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class);
+        }catch (EntityNotFoundException e){
+            throw new EntityNotFoundException("Patient not found with id: " + patientId);
+        }
+
     }
     /**
      * Crea un nuevo paciente en el sistema.
@@ -89,12 +103,20 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public PatientResponseDTO createPatient(PatientRequestDTO patientRequestDTO) {
-        Patient patient = modelMapperConfig.modelMapperPatient().map(patientRequestDTO, Patient.class);
-        patient.setPassword(passwordEncoder.encode(patientRequestDTO.getPassword()));
-        patient.setActive(true);
-        patient.setRoleEnum(RoleEnum.ROLE_PATIENT);
-        patient = patientRepository.save(patient);
-        return modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class);
+        try{
+            if(patientRepository.existsByEmail(patientRequestDTO.getEmail())) {
+                throw new BadRequestException("Patient with email already exists: " + patientRequestDTO.getEmail());
+            }
+            Patient patient = modelMapperConfig.modelMapperPatient().map(patientRequestDTO, Patient.class);
+            patient.setPassword(passwordEncoder.encode(patientRequestDTO.getPassword()));
+            patient.setActive(true);
+            patient.setRoleEnum(RoleEnum.valueOf("PATIENT"));
+            patient = patientRepository.save(patient);
+            return modelMapperConfig.modelMapperPatient().map(patient, PatientResponseDTO.class);
+        }catch (BadRequestException e){
+            throw new BadRequestException("Error al guardar el paciente o el usuario no esta autorizado: " + e.getMessage());
+        }
+
     }
 
 

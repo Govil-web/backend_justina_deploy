@@ -1,18 +1,23 @@
 package io.justina.management.controller.medicalstaff;
 
+import io.justina.management.dto.apiresponse.ApiResponse;
 import io.justina.management.dto.medicalstaff.MedicalStaffRegisterDTO;
 import io.justina.management.dto.medicalstaff.MedicalStaffResponseDTO;
+import io.justina.management.model.MedicalStaff;
 import io.justina.management.service.authentication.AuthenticationService;
 import io.justina.management.service.medicalstaff.IMedicalStaffService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 /**
  * Controlador REST que maneja las operaciones relacionadas con el personal médico.
  *
@@ -20,7 +25,7 @@ import java.util.List;
  * utilizando la ruta base "/v1/api/medical-staff".
  */
 @RestController
-@RequestMapping("v1/api/medical-staff")
+@RequestMapping("api/medical")
 public class MedicalStaffController {
 
     /**
@@ -49,11 +54,16 @@ public class MedicalStaffController {
      * @return ResponseEntity con el personal médico registrado y el estado HTTP correspondiente.
      */
 
-    @PostMapping("/register")
+    @PostMapping("/add")
     @Operation(summary = "Register a new medical staff")
-    public ResponseEntity<MedicalStaffResponseDTO> registerMedicalStaff(@RequestBody @Valid MedicalStaffRegisterDTO medicalStaffRegisterDTO){
-        MedicalStaffResponseDTO medicalStaff = medicalStaffService.registerMedicalStaff(medicalStaffRegisterDTO);
-        return ResponseEntity.ok(medicalStaff);
+    public ResponseEntity<ApiResponse<MedicalStaffResponseDTO>> registerMedicalStaff(@RequestBody @Valid MedicalStaffRegisterDTO medicalStaffRegisterDTO){
+        try{
+            MedicalStaffResponseDTO medicalStaffDTO = medicalStaffService.registerMedicalStaff(medicalStaffRegisterDTO);
+            return new ResponseEntity<>(new ApiResponse<>(true, "Medical staff registered", medicalStaffDTO), HttpStatus.CREATED);
+        }catch (EntityNotFoundException e){
+            return new ResponseEntity<>(new ApiResponse<>(false, "Medical staff not found", null), HttpStatus.NOT_FOUND);
+        }
+
     }
 
     /**
@@ -63,8 +73,13 @@ public class MedicalStaffController {
      */
     @GetMapping("/getAll")
     @Operation(summary = "Get all medical staff")
-    public ResponseEntity<List<MedicalStaffResponseDTO>> getAllMedicalStaff(){
-        return ResponseEntity.ok(medicalStaffService.getAllMedicalStaff());
+    public ResponseEntity<ApiResponse<MedicalStaffResponseDTO>> getAllMedicalStaff(){
+        try{
+            Iterable<MedicalStaffResponseDTO> medicalStaffList = medicalStaffService.getAllMedicalStaff();
+            return new ResponseEntity<>(new ApiResponse<>(true, "Medical staff found", medicalStaffList), HttpStatus.OK);
+        }catch (AccessDeniedException e){
+            return new ResponseEntity<>(new ApiResponse<>(false, "Access is denied", null), HttpStatus.UNAUTHORIZED);
+        }
     }
     /**
      * Maneja la solicitud GET para obtener todos los miembros activos del personal médico.
@@ -73,8 +88,13 @@ public class MedicalStaffController {
      */
     @GetMapping("/getActive")
     @Operation(summary = "Get all active medical staff")
-    public ResponseEntity<List<MedicalStaffResponseDTO>> getMedicalStaffByActive(){
-        return ResponseEntity.ok(medicalStaffService.getMedicalStaffByActive());
+    public ResponseEntity<ApiResponse<MedicalStaffResponseDTO>> getMedicalStaffByActive(){
+        try{
+            Iterable<MedicalStaffResponseDTO> medicalStaffList = medicalStaffService.getMedicalStaffByActive();
+            return new ResponseEntity<>(new ApiResponse<>(true, "Medical staff found", medicalStaffList), HttpStatus.OK);
+        }catch (AccessDeniedException e){
+            return new ResponseEntity<>(new ApiResponse<>(false, "Access is denied", null), HttpStatus.UNAUTHORIZED);
+        }
     }
 
 
@@ -88,12 +108,28 @@ public class MedicalStaffController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "Get medical staff by id")
-    public ResponseEntity<MedicalStaffResponseDTO> getMedicalStaffById(@PathVariable Long id){
+    public ResponseEntity <ApiResponse<MedicalStaffResponseDTO>> getMedicalStaffById(@PathVariable Long id) {
         try {
-            authenticationService.verifyUserAccess(id);
-            return ResponseEntity.ok(medicalStaffService.getMedicalStaffById(id));
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_DOCTOR"))) {
+                MedicalStaff medicalStaff = (MedicalStaff) authentication.getPrincipal();
+                if (!medicalStaff.getId().equals(id)) {
+                    return new ResponseEntity<>(new ApiResponse<>(false, "Access is denied", null), HttpStatus.FORBIDDEN);
+                }
+            }
+            boolean hasAccess = authenticationService.verifyUserAccess(id);
+            if (!hasAccess) {
+                return new ResponseEntity<>(new ApiResponse<>(false, "Access is denied", null), HttpStatus.FORBIDDEN);
+            }
+            MedicalStaffResponseDTO medicalStaffDTO = medicalStaffService.getMedicalStaffById(id);
+            return new ResponseEntity<>(new ApiResponse<>(true, "Medical staff found", medicalStaffDTO), HttpStatus.OK);
+        }catch (EntityNotFoundException e) {
+            System.out.println("Controller: Patient not found - " + e.getMessage());
+            return new ResponseEntity<>(new ApiResponse<>(false, "Patient not found", null), HttpStatus.NOT_FOUND);
         } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            System.out.println("Controller: Access denied - " + e.getMessage());
+            return new ResponseEntity<>(new ApiResponse<>(false, "Access is denied", null), HttpStatus.FORBIDDEN);
         }
     }
     /**

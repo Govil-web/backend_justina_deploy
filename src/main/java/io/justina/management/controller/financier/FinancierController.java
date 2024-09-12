@@ -19,7 +19,7 @@ import java.util.UUID;
  * utilizando rutas bajo el contexto "/v1/api/financier".
  */
 @RestController
-@RequestMapping("v1/api/financier")
+@RequestMapping("api/financier")
 public class FinancierController {
 
     private final IFinancierService financierService;
@@ -63,7 +63,7 @@ public class FinancierController {
      * @return ResponseEntity con el financiero registrado y el estado HTTP correspondiente.
      */
     @Operation(summary = "Register a new financier")
-    @PostMapping("/register")
+    @PostMapping("/add")
     public ResponseEntity<FinancierResponseDTO> registerFinancier(@RequestBody @Valid FinancierRegisterDTO financier) {
         return ResponseEntity.ok(financierService.registerFinancier(financier));
     }

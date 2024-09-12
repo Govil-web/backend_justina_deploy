@@ -1,7 +1,6 @@
 package io.justina.management.model;
 
 import io.justina.management.enums.RoleEnum;
-import io.justina.management.utils.interfaces.Identifiable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +22,9 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails, Identifiable {
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "user_type")
+public class User implements UserDetails {
 
     /**
      * Identificador único del usuario.
@@ -61,6 +62,11 @@ public class User implements UserDetails, Identifiable {
      */
     @Column(name = "password")
     private String password;
+    /**
+     * Número de teléfono del usuario.
+     */
+    @Column(name="teléfono")
+    private String phone;
 
     /**
      * Estado de activo/inactivo del usuario.
@@ -74,7 +80,7 @@ public class User implements UserDetails, Identifiable {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return List.of(new SimpleGrantedAuthority(this.roleEnum.name()));
     }
 
     /**
@@ -129,8 +135,4 @@ public class User implements UserDetails, Identifiable {
         return true;
     }
 
-    @Override
-    public Long getPrimaryKey() {
-        return this.id;
-    }
 }

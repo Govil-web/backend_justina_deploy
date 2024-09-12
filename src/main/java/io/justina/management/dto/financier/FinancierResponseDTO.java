@@ -2,12 +2,14 @@ package io.justina.management.dto.financier;
 
 
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.UUID;
 /**
  * Clase DTO (Data Transfer Object) que representa la respuesta de información de un financiero.
  */
 @Data
-public class FinancierResponseDTO {
+public class FinancierResponseDTO implements Serializable {
 
     /**
      * Identificador único del financiero.

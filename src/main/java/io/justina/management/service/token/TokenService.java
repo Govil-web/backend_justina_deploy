@@ -1,25 +1,20 @@
 package io.justina.management.service.token;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.justina.management.exception.BadRequestException;
-import io.justina.management.model.MedicalStaff;
-import io.justina.management.model.Patient;
 import io.justina.management.model.User;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.GrantedAuthority;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Date;
 
 
 /**
@@ -36,52 +31,25 @@ public class TokenService implements ITokenService {
     /**
      * Genera un token JWT para el usuario proporcionado.
      *
-     * @param entity El usuario para el cual se genera el token
+     * @param user El usuario para el cual se genera el token
      * @return El token JWT generado
      * @throws IllegalArgumentException Si el usuario es nulo
      * @throws RuntimeException Si ocurre un error al crear el token
      */
-    public String generateToken(Object entity) {
+    public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-            JWTCreator.Builder jwtBuilder = JWT.create().withIssuer("justina.io");
-            String token;
-            switch (entity) {
-                case User user -> {
-                    System.out.println("Generating token for User " + user.getEmail() + " with id " + user.getPrimaryKey() + " and role " + user.getRoleEnum().name());
-                    token = jwtBuilder
-                            .withSubject(user.getEmail())
-                            .withClaim("id", user.getPrimaryKey())
-                            .withClaim("role", user.getRoleEnum().name())
-                            .withClaim("authorities", getRoles(user))
-                            .withExpiresAt(generateExpirationDate())
-                            .sign(algorithm);
-                }
-                case Patient patient -> {
-                    System.out.println("Generating token for Patient " + patient.getEmail() + " with id " + patient.getPrimaryKey() + " and role " + patient.getRoleEnum().name());
-                    token = jwtBuilder
-                            .withSubject(patient.getEmail())
-                            .withClaim("id", patient.getPrimaryKey())
-                            .withClaim("role", patient.getRoleEnum().name())
-                            .withClaim("authorities", getRoles(patient))
-                            .withExpiresAt(generateExpirationDate())
-                            .sign(algorithm);
-                }
-                case MedicalStaff medicalStaff -> {
-                    System.out.println("Generating token for MedicalStaff " + medicalStaff.getEmail() + " with id " + medicalStaff.getPrimaryKey() + " and role " + medicalStaff.getRoleEnum().name());
-                    token = jwtBuilder
-                            .withSubject(medicalStaff.getEmail())
-                            .withClaim("id", medicalStaff.getPrimaryKey())
-                            .withClaim("role", medicalStaff.getRoleEnum().name())
-                            .withClaim("authorities", getRoles(medicalStaff))
-                            .withExpiresAt(generateExpirationDate())
-                            .sign(algorithm);
-                }
-                case null, default -> throw new IllegalArgumentException("Entity type not supported to generate token.");
-            }
-            return token;
-        } catch (JWTCreationException exception) {
-            throw new BadRequestException("Fallo la creación del token.");
+            return JWT.create()
+                    .withIssuer("justina.io")
+                    .withSubject(user.getEmail())
+                    .withClaim("id", user.getId())
+                    .withClaim("role", user.getRoleEnum().name())
+                    .withClaim("nombre", user.getFirstName())
+                    .withExpiresAt(Date.from(generateExpirationDate()))
+                    .sign(algorithm);
+        }
+        catch (JWTCreationException exception){
+            throw new RuntimeException("Failed to create token.");
         }
     }
     /**
@@ -113,50 +81,45 @@ public class TokenService implements ITokenService {
         return verifier.getSubject();
     }
 
-    /**
-     * Obtiene los roles del usuario a partir de las authorities.
-     *
-     * @param entity El usuario del cual se obtienen los roles
-     * @return Lista de roles del usuario
-     */
-    private List<String> getRoles(Object entity){
-        return switch (entity) {
-            case User user -> user.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-            case Patient patient -> patient.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-            case MedicalStaff medicalStaff -> medicalStaff.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-            case null, default -> throw new BadRequestException("Usuario no soportado para obtener roles.");
-        };
-    }
 
-    /**
-     * Verifica si el token JWT contiene el rol especificado.
-     *
-     * @param token El token JWT que se desea verificar
-     * @param role El rol que se desea comprobar
-     * @return true si el token contiene el rol especificado, false de lo contrario
-     * @throws RuntimeException Sí ocurre un error al decodificar el token
-     */
-    public boolean hasRol(String token, String role){
-        if(token == null || token.isBlank()){
-            throw new BadRequestException("Token no puede ser nulo o vacío.");
+    public String getUsernameFromToken(String token) {
+        if(token == null){
+            throw new RuntimeException("Token nulo");
         }
+        DecodedJWT verifier;
         try{
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-            DecodedJWT decodedJWT = JWT.decode(token);
-            JWTVerifier verifier = JWT.require(algorithm)
+            verifier = JWT.require(algorithm)
                     .withIssuer("justina.io")
-                    .build();
-            verifier.verify(token);
-            List<String> authorities = decodedJWT.getClaim("authorities").asList(String.class);
-            return authorities.contains(role);
-        }catch (JWTDecodeException exception){
-            return false;
+                    .build()
+                    .verify(token);
+            verifier.getSubject();
+        }catch (JWTCreationException e){
+            throw new RuntimeException("Error al verificar el token");
+        }
+        if (verifier.getSubject() == null){
+            throw new RuntimeException("Verificador invalido");
+        }
+        return verifier.getSubject();
+    }
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = getUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+    private boolean isTokenExpired(String token) {
+        final Date expiration = getExpirationDateFromToken(token);
+        return expiration.before(new Date());
+    }
+    private Date getExpirationDateFromToken(String token) {
+        DecodedJWT jwt = JWT.decode(token);
+        return jwt.getExpiresAt();
+    }
+    public String getRoleFromToken(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("role").asString();
+        } catch (JWTDecodeException exception){
+            throw new RuntimeException("Invalid token");
         }
     }
 

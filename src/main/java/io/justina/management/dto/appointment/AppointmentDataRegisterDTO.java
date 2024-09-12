@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 /**
  * Clase que representa el objeto de transferencia de datos para el registro de una cita médica.
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentDataRegisterDTO {
+public class AppointmentDataRegisterDTO implements Serializable {
 
     /**
      * Identificador de la cita médica.

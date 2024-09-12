@@ -1,6 +1,6 @@
 package io.justina.management.service.user;
 
-import io.justina.management.config.mapper.ModelMapperConfig;
+
 import io.justina.management.dto.user.UserRegisterDataDTO;
 import io.justina.management.dto.user.UserResponseDataDTO;
 import io.justina.management.enums.RoleEnum;
@@ -10,7 +10,6 @@ import io.justina.management.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -60,7 +59,7 @@ public class UserService implements IUserService {
             User user = modelMapper.map(userRegisterDataDTO, User.class);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setActive(true);
-            user.setRoleEnum(RoleEnum.valueOf(user.getRoleEnum().name()));
+            user.setRoleEnum(RoleEnum.valueOf("ADMIN"));
             userRepository.save(user);
             return modelMapper.map(user, UserResponseDataDTO.class);
         }
@@ -82,7 +81,7 @@ public class UserService implements IUserService {
         }
         List<User> users = userRepository.findAll();
         List<User> adminUsers = users.stream()
-                .filter(user -> user.getRoleEnum() == RoleEnum.ROLE_ADMIN)
+                .filter(user -> user.getRoleEnum() == RoleEnum.ADMIN)
                 .collect(Collectors.toList());
         Type listType = new org.modelmapper.TypeToken<List<UserResponseDataDTO>>() {}.getType();
         return modelMapper.map(adminUsers, listType);
@@ -96,10 +95,9 @@ public class UserService implements IUserService {
      * @throws RuntimeException Si no se encuentra un usuario con el ID especificado o si el usuario encontrado no tiene el rol de administrador.
      */
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public UserResponseDataDTO getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent() && user.get().getRoleEnum() == RoleEnum.ROLE_ADMIN) {
+        if (user.isPresent() && user.get().getRoleEnum() == RoleEnum.ADMIN) {
             return modelMapper.map(user.get(), UserResponseDataDTO.class);
         } else {
             throw new RuntimeException("User not found with id: " + id);

@@ -50,40 +50,37 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
-                        .requestMatchers(HttpMethod.POST, "v1/api/user/register", "v1/api/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user/add", "/api/login").permitAll()
                         .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
 
-                        // Rutas para ADMIN
+                        // Rutas compartidas entre ADMIN / PATIENT / DOCTOR
+                        .requestMatchers(HttpMethod.GET, "/api/patient/{id}", "/api/medical/getActive").hasAnyRole("ADMIN", "PATIENT")
+                        .requestMatchers(HttpMethod.GET, "/api/appointment/getByPatient/{id}").hasAnyRole("ADMIN", "PATIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/appointment/add").hasAnyRole("PATIENT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/appointment/getByMedicalStaff/{id}").hasAnyRole("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/medical/{id}").hasAnyRole("ADMIN", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/api/appointment/getByMedicalStaff/{id}").hasAnyRole("ADMIN", "DOCTOR")
+
+
+                        // Rutas específicas para ADMIN
                         .requestMatchers(HttpMethod.GET,
-                                "v1/api/user/getAll", "v1/api/user/**",
-                                "v1/api/medical-staff/getAll", "v1/api/medical-staff/getActive",
-                                "v1/api/financier/getAll", "v1/api/financier/**",
-                                "v1/api/appointment/getAll", "v1/api/appointment/getByPatient/{id}",
-                                "v1/api/appointment/getByMedicalStaff/{id}").hasRole("ADMIN")
+                                "/api/user/getAll", "/api/user/**",
+                                "/api/medical/getAll",
+                                "/api/financier/getAll", "/api/financier/**",
+                                "/api/appointment/getAll", "/api/patient/getAll").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,
-                                "v1/api/appointment/register",
-                                "v1/api/medical-staff/register",
-                                "v1/api/financier/").hasRole("ADMIN")
+                                "/api/medical/add",
+                                "/api/financier/add", "/api/patient/add").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,
-                                "v1/api/medical-staff/delete/{id}",
-                                "v1/api/appointment/delete/{id}").hasRole("ADMIN")
+                                "/api/medical/delete/{id}",
+                                "/api/appointment/delete/{id}").hasRole("ADMIN")
 
-                        // Rutas para PATIENT
-                        .requestMatchers(HttpMethod.GET,
-                                "v1/api/appointment/getByPatient/{id}","v1/api/medical-staff/getActive",
-                                "v1/api/patient/{id}").hasAnyRole("ADMIN", "PATIENT")
-                        .requestMatchers(HttpMethod.POST, "v1/api/patient/register",
-                                "v1/api/appointment/register").hasAnyRole("ADMIN", "PATIENT")
-
-                        // Rutas para DOCTOR
-                        .requestMatchers(HttpMethod.GET, "v1/api/medical-staff/{id}").hasAnyRole("ADMIN", "DOCTOR")
-                        .requestMatchers(HttpMethod.GET, "v1/api/appointment/getByMedicalStaff/{id}").hasAnyRole("ADMIN", "DOCTOR")
-
-                        // Cualquier otra solicitud requiere autenticación
-                        .anyRequest().authenticated())
+                        // Acceso total para ADMIN a cualquier otra solicitud
+                        .anyRequest().hasRole("ADMIN"))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
     /**
      * Configura el administrador de autenticación para la aplicación.
      *

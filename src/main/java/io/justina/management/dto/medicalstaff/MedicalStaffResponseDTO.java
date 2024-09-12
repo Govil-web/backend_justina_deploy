@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Clase DTO (Data Transfer Object) que representa la respuesta de información de un personal médico.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicalStaffResponseDTO {
+public class MedicalStaffResponseDTO implements Serializable {
 
     /**
      * Identificador único del personal médico.

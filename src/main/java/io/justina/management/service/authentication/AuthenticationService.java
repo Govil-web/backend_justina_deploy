@@ -2,12 +2,9 @@ package io.justina.management.service.authentication;
 
 import io.justina.management.dto.jwttoken.DataJWTTokenDTO;
 import io.justina.management.dto.user.UserAuthenticateDataDTO;
-import io.justina.management.exception.BadRequestException;
 import io.justina.management.model.MedicalStaff;
 import io.justina.management.model.Patient;
-import io.justina.management.repository.MedicalStaffRepository;
-import io.justina.management.repository.PatientRepository;
-import io.justina.management.repository.UserRepository;
+import io.justina.management.model.User;
 import io.justina.management.service.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,9 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,53 +21,23 @@ import org.springframework.stereotype.Service;
  * y la verificación de roles y permisos de acceso.
  */
 @Service
-public class AuthenticationService implements UserDetailsService, IAuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
 
-    private final UserRepository userRepository;
-    private final MedicalStaffRepository medicalStaffRepository;
-    private final PatientRepository patientRepository;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
     /**
      * Constructor para inicializar el servicio de autenticación.
-     *
-     * @param userRepository       Repositorio de usuarios para buscar usuarios por correo electrónico.
      * @param tokenService         Servicio para la generación de tokens JWT.
      * @param authenticationManager Administrador de autenticación para autenticar usuarios.
      */
     @Autowired
-    public AuthenticationService(UserRepository userRepository, TokenService tokenService, @Lazy AuthenticationManager authenticationManager,
-                                 MedicalStaffRepository medicalStaffRepository, PatientRepository patientRepository) {
-        this.userRepository = userRepository;
+    public AuthenticationService(TokenService tokenService, @Lazy AuthenticationManager authenticationManager) {
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
-        this.medicalStaffRepository = medicalStaffRepository;
-        this.patientRepository = patientRepository;
 
     }
 
-    /**
-     * Carga los detalles del usuario por su nombre de usuario (correo electrónico).
-     *
-     * @param username Nombre de usuario (correo electrónico) del usuario.
-     * @return Detalles del usuario encontrado.
-     * @throws UsernameNotFoundException Si el usuario no se encuentra en la base de datos.
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails userDetails = userRepository.findByEmail(username);
-        if (userDetails == null){
-            userDetails = patientRepository.findByEmail(username);
-        }
-        if(userDetails == null){
-            userDetails = medicalStaffRepository.findByEmail(username);
-        }
-        if(userDetails == null){
-            throw new BadRequestException("Usuario no encontrado");
-        }
-        return userDetails;
-    }
     /**
      * Autentíca a un usuario con las credenciales proporcionadas y genera un token JWT.
      *
@@ -84,8 +48,8 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
     public DataJWTTokenDTO authenticate(UserAuthenticateDataDTO userAuthenticateDataDTO) {
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(userAuthenticateDataDTO.getEmail(), userAuthenticateDataDTO.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        var entityAuth = authentication.getPrincipal();
-        String jwtToken = tokenService.generateToken(entityAuth);
+        User user = (User) authentication.getPrincipal();
+        String jwtToken = tokenService.generateToken(user);
         System.out.println("Generated token: " + jwtToken + " for user: " + userAuthenticateDataDTO.getEmail());
         return new DataJWTTokenDTO(jwtToken);
     }
@@ -109,8 +73,14 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      */
     @Override
     public boolean isAuthenticatedUserOwner(Long id) {
-        Long authenticatedUserId = getAuthenticatedUserId();
-        return authenticatedUserId.equals(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof Patient) {
+            Patient patient = (Patient) authentication.getPrincipal();
+            System.out.println("isAuthenticatedUserOwner: Authenticated patient ID = " + patient.getId());
+            System.out.println("isAuthenticatedUserOwner: Requested patient ID = " + id);
+            return patient.getId().equals(id);
+        }
+        return false;
     }
 
     /**
@@ -120,11 +90,25 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      * @throws AccessDeniedException Si el usuario no tiene permisos para acceder al recurso.
      */
     @Override
-    public void verifyUserAccess(Long id) {
+    public boolean verifyUserAccess(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!isAdmin(authentication) && !isAuthenticatedUserOwner(id)) {
-            throw new AccessDeniedException("You do not have permissions to access this resource.");
+        System.out.println("verifyUserAccess: User authorities = " + authentication.getAuthorities());
+        System.out.println("verifyUserAccess: Requested patient ID = " + id);
+
+        if (isAdmin(authentication)) {
+            System.out.println("verifyUserAccess: User is ADMIN, access granted");
+            return true;
         }
+
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_PATIENT"))) {
+            boolean isOwner = isAuthenticatedUserOwner(id);
+            System.out.println("verifyUserAccess: User is PATIENT, isOwner = " + isOwner);
+            return isOwner;
+        }
+
+        System.out.println("verifyUserAccess: Access denied");
+        return false;
     }
     /**
      * Obtiene el ID del usuario autenticado.
@@ -134,16 +118,14 @@ public class AuthenticationService implements UserDetailsService, IAuthenticatio
      */
     @Override
     public Long getAuthenticatedUserId() {
-        Long id;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof MedicalStaff medicalStaff) {
-            id = medicalStaff.getId();
-        } else if (authentication.getPrincipal() instanceof Patient patient) {
-            id = patient.getId();
-        }else{
+        if (authentication.getPrincipal() instanceof User user) {
+            System.out.println("authentication desde el service= " + authentication);
+
+            return user.getId();
+        } else {
             throw new IllegalStateException("Could not get authenticated user ID");
         }
-        return id;
     }
 
 }

@@ -11,7 +11,7 @@ public interface ITokenService {
      * @param user Usuario para el cual se genera el token.
      * @return Token de autenticación generado.
      */
-    String generateToken(Object user);
+    String generateToken(User user);
 
     /**
      * Obtiene el sujeto (subject) del token especificado.

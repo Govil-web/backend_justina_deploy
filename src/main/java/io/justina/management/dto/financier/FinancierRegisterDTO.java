@@ -5,11 +5,13 @@ package io.justina.management.dto.financier;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Clase DTO (Data Transfer Object) que representa la información de registro de un financiero.
  */
 @Data
-public class FinancierRegisterDTO {
+public class FinancierRegisterDTO implements Serializable {
 
     /**
      * Nombre del financiero.
