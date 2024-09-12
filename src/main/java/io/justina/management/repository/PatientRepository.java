@@ -12,13 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    /**
-     * Busca y devuelve el paciente asociado al correo electrónico especificado.
-     *
-     * @param email Correo electrónico del paciente a buscar.
-     * @return El paciente asociado al correo electrónico especificado.
-     */
-    Patient findByEmail(String email);
+
     /**
      * Verifica si existe un paciente con el correo electrónico especificado.
      *
