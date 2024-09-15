@@ -71,7 +71,7 @@ public class MedicalStaffController {
      *
      * @return ResponseEntity con la lista de personal médico y el estado HTTP correspondiente.
      */
-    @GetMapping("/getAll")
+    @GetMapping
     @Operation(summary = "Get all medical staff")
     public ResponseEntity<ApiResponse<MedicalStaffResponseDTO>> getAllMedicalStaff(){
         try{

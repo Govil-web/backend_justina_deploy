@@ -40,7 +40,7 @@ public class FinancierController {
      * @return ResponseEntity con la lista de financieros y el estado HTTP correspondiente.
      */
     @Operation(summary = "Get all financiers")
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<List<FinancierResponseDTO>> getAllFinanciers() {
         return ResponseEntity.ok(financierService.getAllFinanciers());
     }

@@ -64,10 +64,10 @@ public class SecurityConfiguration {
 
                         // Rutas específicas para ADMIN
                         .requestMatchers(HttpMethod.GET,
-                                "/api/user/getAll", "/api/user/**",
-                                "/api/medical/getAll",
-                                "/api/financier/getAll", "/api/financier/**",
-                                "/api/appointment/getAll", "/api/patient/getAll").hasRole("ADMIN")
+                                "/api/user", "/api/user/**",
+                                "/api/medical",
+                                "/api/financier", "/api/financier/**",
+                                "/api/appointment", "/api/patient").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/medical/add",
                                 "/api/financier/add", "/api/patient/add").hasRole("ADMIN")

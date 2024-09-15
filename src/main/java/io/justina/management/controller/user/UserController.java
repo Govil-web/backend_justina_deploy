@@ -55,7 +55,7 @@ public class UserController {
      *
      * @return ResponseEntity con la lista de usuarios y el estado HTTP correspondiente.
      */
-    @GetMapping("/getAll")
+    @GetMapping
     @Operation(summary = "Get all users")
     public ResponseEntity<ApiResponse<UserResponseDataDTO>> getAllUsers(){
         try{

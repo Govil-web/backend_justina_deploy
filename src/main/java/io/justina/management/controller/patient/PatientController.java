@@ -42,7 +42,7 @@ public class PatientController {
          * @return ResponseEntity con la lista de pacientes y el estado HTTP correspondiente.
          */
         @Operation(summary = "Get all patients")
-        @GetMapping("/getAll")
+        @GetMapping
         public ResponseEntity<ApiResponse<PatientResponseDTO>> findAll () {
             try{
                 Iterable<PatientResponseDTO> patientList = patientService.getAllPatients();

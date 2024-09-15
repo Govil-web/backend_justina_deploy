@@ -53,7 +53,7 @@ public class AppointmentController {
      * @return ResponseEntity con la lista de citas médicas y el estado HTTP correspondiente.
      */
     @Operation(summary = "Get all appointments")
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<ApiResponse<AppointmentResponseDTO>> findAll() {
         try{
             Iterable<AppointmentResponseDTO> appointmentList = appointmentService.getAllAppointments();
